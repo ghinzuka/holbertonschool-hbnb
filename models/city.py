@@ -4,7 +4,7 @@ from typing import List
 
 
 class City:
-    __cities = {}
+    _cities = {}
     
     def __init__(self, name: str, city_id=None, created_at=None, updated_at=None):
         if name in City._cities:

@@ -1,5 +1,4 @@
 import unittest
-
 from city import City
 
 class TestCity(unittest.TestCase):
