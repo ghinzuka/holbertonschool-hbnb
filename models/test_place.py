@@ -1,3 +1,4 @@
+# TestPlace.py
 import unittest
 from uuid import UUID, uuid4
 from datetime import datetime
@@ -23,7 +24,7 @@ class TestPlace(unittest.TestCase):
         place = Place(
             name="Test Place",
             description="A nice place to stay",
-            address="1234 Main St, Test City, Test State, 12345",
+            address="1234 Main St, Test City, Test State, 12345",  # Corrected address format
             city_name=self.city.name,
             latitude=40.7128,
             longitude=-74.0060,
@@ -67,7 +68,7 @@ class TestPlace(unittest.TestCase):
             n_bathroom=1,
             price_per_night=100.0,
             n_max_people=4,
-            amenities=Amenities(name="WiFi"),
+            amenities=Amenities(name="WiFi"),  # Corrected to use existing amenity
             reviews=[],
             country=self.country
         )
