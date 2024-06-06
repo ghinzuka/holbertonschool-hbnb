@@ -33,6 +33,10 @@ class Place:
         self.updated_at = datetime.now()
         
 
+        city = City.get_city_by_name(city_name)
+        if not city:
+            raise ValueError(f"The city {city_name} is not found")
+
         if not any(city.name == city_name for city in country.cities):
             raise ValueError(f"The city {city_name} is not found in the country {country.name}")
 
