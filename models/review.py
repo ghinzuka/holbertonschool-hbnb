@@ -10,3 +10,13 @@ class Review:
         self.rating = rating
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
+        
+    @property
+    def text(self):
+        return self._text
+
+    @text.setter
+    def text(self, value):
+        if not isinstance(value, str) or not value:
+            raise TypeError("text must be a non-empty string")
+        self._text = value
