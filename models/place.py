@@ -33,9 +33,17 @@ class Place:
         self.updated_at = datetime.now()
         
 
+        city = City.get_city_by_name(city_name)
+        if not city:
+            raise ValueError(f"The city {city_name} is not found")
+
         if not any(city.name == city_name for city in country.cities):
             raise ValueError(f"The city {city_name} is not found in the country {country.name}")
-
+        
+        for amenity in amenities:
+           if not Amenities.get_amenity_by_name(amenity.name):
+               raise ValueError(f"Amenity '{amenity.name}' does not exist")
+           
     @property
     def name(self):
         return self._name
@@ -63,19 +71,11 @@ class Place:
     @property
     def address(self):
         return self._address
-
+    
     @address.setter
     def address(self, value):
         if not isinstance(value, str) or not value:
             raise TypeError("address must be a non-empty string")
-        
-        address_pattern = re.compile(
-            r'^[A-Za-z0-9\s,]+,\s*[A-Za-z\s]+,\s*[A-Za-z\s]+,\s*[A-Za-z]{2}\s*\d{5}$'
-        )
-        
-        if not address_pattern.match(value):
-            raise ValueError("address must follow a valid format")
-        
         self._address = value
 
     @property
@@ -224,6 +224,3 @@ class Place:
             if hasattr(self, key):
                 setattr(self, key, value)
         self.updated_at = datetime.now()
-
-
-
