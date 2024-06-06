@@ -11,7 +11,6 @@ class TestPlace(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # Clear the created cities before each test to ensure isolation
         City._cities.clear()
         Amenities._amenities.clear()
 

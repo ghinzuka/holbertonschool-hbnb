@@ -28,3 +28,7 @@ class City:
     @classmethod
     def get_all_cities(cls):
         return cls._cities.values()
+    
+    @staticmethod
+    def get_city_by_name(name: str):
+        return City._cities.get(name)
