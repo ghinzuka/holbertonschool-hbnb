@@ -39,7 +39,11 @@ class Place:
 
         if not any(city.name == city_name for city in country.cities):
             raise ValueError(f"The city {city_name} is not found in the country {country.name}")
-
+        
+        for amenity in amenities:
+           if not Amenities.get_amenity_by_name(amenity.name):
+               raise ValueError(f"Amenity '{amenity.name}' does not exist")
+           
     @property
     def name(self):
         return self._name
