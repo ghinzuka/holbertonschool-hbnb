@@ -1,4 +1,3 @@
-# TestPlace.py
 import unittest
 from uuid import UUID, uuid4
 from datetime import datetime
@@ -14,6 +13,7 @@ class TestPlace(unittest.TestCase):
     def setUpClass(cls):
         # Clear the created cities before each test to ensure isolation
         City._cities.clear()
+        Amenities._amenities.clear()
 
     def setUp(self):
         # Create a unique city for each test
@@ -68,7 +68,7 @@ class TestPlace(unittest.TestCase):
             n_bathroom=1,
             price_per_night=100.0,
             n_max_people=4,
-            amenities=Amenities(name="WiFi"),  # Corrected to use existing amenity
+            amenities=Amenities(name="WiFi"), 
             reviews=[],
             country=self.country
         )
