@@ -1,4 +1,4 @@
-import uuid
+from uuid import UUID, uuid4
 from datetime import datetime
 from typing import List
 
@@ -10,7 +10,7 @@ class City:
         if name in City._cities:
             raise ValueError(f"City {name} already exists")	
         self.name = name
-        self.city_id = uuid.uuid4()
+        self.city_id = uuid4()
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
         City._cities[name] = self

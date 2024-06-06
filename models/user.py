@@ -17,46 +17,30 @@ class User:
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
 
-    @property
-    def email(self):
-        return self._email
+    def add_place(self, place: Place):
+        place.added_by_user_id = self.user_id
+        self.places.append(place)
 
-    @email.setter
-    def email(self, value):
-        if not isinstance(value, str) or not value:
-            raise TypeError("email must be a non-empty string")
-        # Basic email format validation using regex
-        email_pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
-        if not email_pattern.match(value):
-            raise ValueError("invalid email format")
-        self._email = value
+    def remove_place(self, place: Place):
+        if place in self.places:
+            self.places.remove(place)
 
-    @property
-    def password(self):
-        return self._password
+    def add_review(self, review: Review):
+        self.reviews.append(review)
 
-    @password.setter
-    def password(self, value):
-        if not isinstance(value, str) or not value:
-            raise TypeError("password must be a non-empty string")
-        self._password = value
+    def remove_review(self, review: Review):
+        if review in self.reviews:
+            self.reviews.remove(review)
 
-    @property
-    def first_name(self):
-        return self._first_name
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+        self.updated_at = datetime.now()
 
-    @first_name.setter
-    def first_name(self, value):
-        if not isinstance(value, str) or not value:
-            raise TypeError("first_name must be a non-empty string")
-        self._first_name = value
-
-    @property
-    def last_name(self):
-        return self._last_name
-
-    @last_name.setter
-    def last_name(self, value):
-        if not isinstance(value, str) or not value:
-            raise TypeError("last_name must be a non-empty string")
-        self._last_name = value
+    def get_reviews_ids(self):
+        reviews_ids = []
+        for review in self.reviews:
+            if review.user_id == self.user_id:
+                reviews_ids.append(review.review_id)
+        return reviews_ids 
