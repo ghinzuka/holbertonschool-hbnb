@@ -1,16 +1,16 @@
-from uuid import UUID, uuid4
+import uuid
 from datetime import datetime
 from typing import List
 
 
 class City:
-    __cities = {}
+    _cities = {}
     
     def __init__(self, name: str, city_id=None, created_at=None, updated_at=None):
         if name in City._cities:
             raise ValueError(f"City {name} already exists")	
         self.name = name
-        self.city_id = uuid4()
+        self.city_id = uuid.uuid4()
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
         City._cities[name] = self
@@ -28,3 +28,7 @@ class City:
     @classmethod
     def get_all_cities(cls):
         return cls._cities.values()
+    
+    @staticmethod
+    def get_city_by_name(name: str):
+        return City._cities.get(name)
