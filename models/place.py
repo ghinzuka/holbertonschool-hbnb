@@ -22,7 +22,7 @@ class Place:
         self.latitude = latitude
         self.longitude = longitude
         self.user_id = user_id
-        self.creator_id = creator_id  # Nouvel attribut pour l'ID du créateur
+        self.creator_id = creator_id 
         self.n_room = n_room
         self.n_bathroom = n_bathroom
         self.price_per_night = price_per_night
@@ -123,6 +123,20 @@ class Place:
         self._user_id = value
 
     @property
+    def creator_id(self):
+        return self._creator_id
+
+    @creator_id.setter
+    def creator_id(self, value):
+        if not isinstance(value, UUID) or value is None:
+            raise TypeError("creator_id must be a non-empty UUID")
+        if hasattr(self, '_creator_id') and self._creator_id is not None:
+            if self._user_id != value:
+                raise PermissionError("creator_id cannot be modified by other users.")
+        else:
+            self._creator_id = value
+
+    @property
     def n_room(self):
         return self._n_room
 
@@ -202,7 +216,7 @@ class Place:
             raise TypeError("updated_at must be a datetime instance")
         self._updated_at = value
 
-def update(self, user_id: UUID, **kwargs):
+    def update(self, user_id: UUID, **kwargs):
         if user_id != self.creator_id:
             raise PermissionError("Only the creator can update this place.")
         
@@ -210,3 +224,6 @@ def update(self, user_id: UUID, **kwargs):
             if hasattr(self, key):
                 setattr(self, key, value)
         self.updated_at = datetime.now()
+
+
+
