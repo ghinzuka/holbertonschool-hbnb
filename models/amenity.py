@@ -27,3 +27,7 @@ class Amenities:
     @classmethod
     def get_all_amenities(cls):
         return cls._amenities.values()
+
+    @staticmethod
+    def get_amenity_by_name(name: str):
+        return Amenities._amenities.get(name)
