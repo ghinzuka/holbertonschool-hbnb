@@ -71,16 +71,11 @@ class Place:
     @property
     def address(self):
         return self._address
-
+    
     @address.setter
     def address(self, value):
         if not isinstance(value, str) or not value:
             raise TypeError("address must be a non-empty string")
-        address_pattern = re.compile(
-            r'^[A-Za-z0-9\s,]+,\s*[A-Za-z\s]+,\s*[A-Za-z\s]+,\s*[A-Za-z]{2}\s*\d{5}$'
-        )
-        if not address_pattern.match(value):
-            raise ValueError("address must follow a valid format")
         self._address = value
 
     @property
