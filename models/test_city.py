@@ -1,12 +1,12 @@
 import unittest
-
 from city import City
 
 class TestCity(unittest.TestCase):
 
     def setUp(self):
+        # This will run before every test
+        City._cities = {}  # Reset the class variable to ensure tests are isolated
 
-        City._cities = {}  
     def test_create_city(self):
         city = City("Paris")
         self.assertEqual(city.name, "Paris")
