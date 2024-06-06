@@ -30,7 +30,7 @@ class Place:
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
         
-        # Validate city_name with the country
+
         if not any(city.name == city_name for city in country.cities):
             raise ValueError(f"The city {city_name} is not found in the country {country.name}")
 
@@ -67,7 +67,6 @@ class Place:
         if not isinstance(value, str) or not value:
             raise TypeError("address must be a non-empty string")
         
-        # Regex pattern for address validation
         address_pattern = re.compile(
             r'^\d+\s[A-Za-z0-9\s]+,\s*[A-Za-z\s]+,\s*[A-Za-z\s]+,\s*[A-Za-z]{2}\s*\d{5}$'
         )
@@ -202,7 +201,6 @@ class Place:
         self._updated_at = value
 
     def update(self, **kwargs):
-        # Allow updating attributes with key-value pairs
         for key, value in kwargs.items():
             if hasattr(self, key):
                 setattr(self, key, value)
