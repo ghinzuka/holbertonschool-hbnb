@@ -224,3 +224,6 @@ class Place:
             if hasattr(self, key):
                 setattr(self, key, value)
         self.updated_at = datetime.now()
+
+
+
