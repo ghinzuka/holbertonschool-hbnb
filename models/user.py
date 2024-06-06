@@ -1,12 +1,14 @@
-import re
-from typing import List
 from uuid import UUID, uuid4
 from datetime import datetime
 from place import Place
 from review import Review
 
 class User:
+    _registered_emails = set()
+
     def __init__(self, email: str, password: str, first_name: str, last_name: str):
+        if email in User._registered_emails:
+            raise ValueError(f"Email {email} is already taken.")
         self.user_id = uuid4()
         self.email = email
         self.password = password
@@ -16,6 +18,7 @@ class User:
         self.reviews = []
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
+        User._registered_emails.add(email)
 
     def add_place(self, place: Place):
         place.added_by_user_id = self.user_id
@@ -35,6 +38,12 @@ class User:
     def update(self, **kwargs):
         for key, value in kwargs.items():
             if hasattr(self, key):
+                if key == "email":
+                    if value in User._registered_emails:
+                        raise ValueError(f"Email {value} is already taken.")
+                    # Update the email set
+                    User._registered_emails.remove(self.email)
+                    User._registered_emails.add(value)
                 setattr(self, key, value)
         self.updated_at = datetime.now()
 
@@ -44,3 +53,8 @@ class User:
             if review.user_id == self.user_id:
                 reviews_ids.append(review.review_id)
         return reviews_ids 
+
+    @classmethod
+    def remove_user(cls, user):
+        if user.email in cls._registered_emails:
+            cls._registered_emails.remove(user.email)

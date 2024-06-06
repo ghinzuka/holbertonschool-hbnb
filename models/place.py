@@ -9,9 +9,10 @@ from country import Country
 
 class Place:
     def __init__(self, name: str, description: str, address: str, city_name: str,
-                 latitude: float, longitude: float, user_id: UUID, n_room: int,
-                 n_bathroom: int, price_per_night: float, n_max_people: int,
-                 amenities: Amenities, reviews: List[Review], country: 'Country'):
+                 latitude: float, longitude: float, user_id: UUID, creator_id: UUID,
+                 n_room: int, n_bathroom: int, price_per_night: float,
+                 n_max_people: int, amenities: Amenities, reviews: List[Review],
+                 country: 'Country'):
         
         self.place_id = uuid4()
         self.name = name
@@ -21,6 +22,7 @@ class Place:
         self.latitude = latitude
         self.longitude = longitude
         self.user_id = user_id
+        self.creator_id = creator_id  # Nouvel attribut pour l'ID du créateur
         self.n_room = n_room
         self.n_bathroom = n_bathroom
         self.price_per_night = price_per_night
@@ -200,7 +202,10 @@ class Place:
             raise TypeError("updated_at must be a datetime instance")
         self._updated_at = value
 
-    def update(self, **kwargs):
+def update(self, user_id: UUID, **kwargs):
+        if user_id != self.creator_id:
+            raise PermissionError("Only the creator can update this place.")
+        
         for key, value in kwargs.items():
             if hasattr(self, key):
                 setattr(self, key, value)
