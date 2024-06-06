@@ -1,15 +1,17 @@
+import re
 from typing import List
 from uuid import UUID, uuid4
 from datetime import datetime
 from city import City
 from amenity import Amenities
 from review import Review
+from country import Country
 
 class Place:
     def __init__(self, name: str, description: str, address: str, city_name: str,
                  latitude: float, longitude: float, user_id: UUID, n_room: int,
                  n_bathroom: int, price_per_night: float, n_max_people: int,
-                 amenities: Amenities, reviews: List[Review]):
+                 amenities: Amenities, reviews: List[Review], country: 'Country'):
         
         self.place_id = uuid4()
         self.name = name
@@ -31,15 +33,15 @@ class Place:
         # Validate city_name with the country
         if not any(city.name == city_name for city in country.cities):
             raise ValueError(f"The city {city_name} is not found in the country {country.name}")
-    
+
     @property
     def name(self):
         return self._name
 
     @name.setter
     def name(self, value):
-        if not isinstance(value, str):
-            raise TypeError("name must be a string")
+        if not isinstance(value, str) or not value:
+            raise TypeError("name must be a non-empty string")
         self._name = value
 
     @property
@@ -50,6 +52,10 @@ class Place:
     def description(self, value):
         if not isinstance(value, str):
             raise TypeError("description must be a string")
+        if not value:
+            raise ValueError("description must not be empty")
+        if len(value) > 400:
+            raise ValueError("description must be under 400 characters")
         self._description = value
 
     @property
@@ -58,8 +64,17 @@ class Place:
 
     @address.setter
     def address(self, value):
-        if not isinstance(value, str):
-            raise TypeError("address must be a string")
+        if not isinstance(value, str) or not value:
+            raise TypeError("address must be a non-empty string")
+        
+        # Regex pattern for address validation
+        address_pattern = re.compile(
+            r'^\d+\s[A-Za-z0-9\s]+,\s*[A-Za-z\s]+,\s*[A-Za-z\s]+,\s*[A-Za-z]{2}\s*\d{5}$'
+        )
+        
+        if not address_pattern.match(value):
+            raise ValueError("address must follow the format '1234 Main St, City, State, 12345'")
+        
         self._address = value
 
     @property
@@ -68,8 +83,8 @@ class Place:
 
     @city_name.setter
     def city_name(self, value):
-        if not isinstance(value, str):
-            raise TypeError("city_name must be a string")
+        if not isinstance(value, str) or not value:
+            raise TypeError("city_name must be a non-empty string")
         self._city_name = value
 
     @property
@@ -78,8 +93,8 @@ class Place:
 
     @latitude.setter
     def latitude(self, value):
-        if not isinstance(value, float):
-            raise TypeError("latitude must be a float")
+        if not isinstance(value, float) or value is None:
+            raise TypeError("latitude must be a non-empty float")
         if value < -90 or value > 90:
             raise ValueError("latitude must be between -90 and 90 degrees")
         self._latitude = value
@@ -90,8 +105,8 @@ class Place:
 
     @longitude.setter
     def longitude(self, value):
-        if not isinstance(value, float):
-            raise TypeError("longitude must be a float")
+        if not isinstance(value, float) or value is None:
+            raise TypeError("longitude must be a non-empty float")
         if value < -180 or value > 180:
             raise ValueError("longitude must be between -180 and 180 degrees")
         self._longitude = value
@@ -102,8 +117,8 @@ class Place:
 
     @user_id.setter
     def user_id(self, value):
-        if not isinstance(value, UUID):
-            raise TypeError("user_id must be a UUID")
+        if not isinstance(value, UUID) or value is None:
+            raise TypeError("user_id must be a non-empty UUID")
         self._user_id = value
 
     @property
@@ -112,8 +127,8 @@ class Place:
 
     @n_room.setter
     def n_room(self, value):
-        if not isinstance(value, int):
-            raise TypeError("n_room must be an integer")
+        if not isinstance(value, int) or value is None:
+            raise TypeError("n_room must be a non-empty integer")
         self._n_room = value
 
     @property
@@ -122,8 +137,8 @@ class Place:
 
     @n_bathroom.setter
     def n_bathroom(self, value):
-        if not isinstance(value, int):
-            raise TypeError("n_bathroom must be an integer")
+        if not isinstance(value, int) or value is None:
+            raise TypeError("n_bathroom must be a non-empty integer")
         self._n_bathroom = value
 
     @property
@@ -132,8 +147,8 @@ class Place:
 
     @price_per_night.setter
     def price_per_night(self, value):
-        if not isinstance(value, float):
-            raise TypeError("price_per_night must be a float")
+        if not isinstance(value, float) or value is None:
+            raise TypeError("price_per_night must be a non-empty float")
         self._price_per_night = value
 
     @property
@@ -142,8 +157,8 @@ class Place:
 
     @n_max_people.setter
     def n_max_people(self, value):
-        if not isinstance(value, int):
-            raise TypeError("n_max_people must be an integer")
+        if not isinstance(value, int) or value is None:
+            raise TypeError("n_max_people must be a non-empty integer")
         self._n_max_people = value
 
     @property
