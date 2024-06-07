@@ -1,33 +1,27 @@
 from uuid import uuid4
 from datetime import datetime
 
-
 class Amenities:
     _amenities = []
 
     def __init__(self, names: list):
-        print(names)  # Ajout de print pour vérifier les noms fournis
-        if not all(isinstance(name, str) for name in names):
-            raise TypeError("Tous les noms doivent être des chaînes de caractères")
-        if len(names) != len(set(names)):
-            raise ValueError("Les noms doivent être uniques dans la liste fournie")
-        existing_names = [amenity['name'] for amenity in Amenities._amenities]
-        if any(name in existing_names for name in names):
-            raise ValueError("Un ou plusieurs noms existent déjà parmi les aménités existants")
-        
-        self.names = names
+        self.names = names  # This will call the setter and perform validation
+        self.amenity_ids = []
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
-        
+
         for name in self.names:
-            existing_amenity = next((amenity for amenity in Amenities._amenities if amenity['name'] == name), None)
+            existing_amenity = self.get_amenities_by_name(name)
             if existing_amenity:
-                self.amenity_id = existing_amenity['amenity_id']
+                # Si l'amenity avec ce nom existe déjà, réutiliser ses attributs
+                self.amenity_ids.append(existing_amenity[0]['amenity_id'])
             else:
-                self.amenity_id = uuid4()
+                # Sinon, créer un nouvel amenity avec un nouvel UUID
+                amenity_id = uuid4()
+                self.amenity_ids.append(amenity_id)
                 Amenities._amenities.append({
                     'name': name,
-                    'amenity_id': self.amenity_id,
+                    'amenity_id': amenity_id,
                     'created_at': self.created_at,
                     'updated_at': self.updated_at
                 })
@@ -38,9 +32,10 @@ class Amenities:
 
     @names.setter
     def names(self, value):
+        print("Checking names:", value)  # Ajouter cette ligne pour voir les noms vérifiés
         if not all(isinstance(name, str) for name in value):
             raise TypeError("Tous les noms doivent être des chaînes de caractères")
-        self.__names = value
+        self.__names = list(set(value))  # Convertir en ensemble pour éliminer les doublons, puis reconvertir en liste
 
     @classmethod
     def get_all_amenities(cls):
