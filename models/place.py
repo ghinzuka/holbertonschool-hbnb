@@ -11,15 +11,9 @@ class Place:
     def __init__(self, name: str, description: str, address: str, city_name: str,
                  latitude: float, longitude: float, user_id: UUID, creator_id: UUID,
                  n_room: int, n_bathroom: int, price_per_night: float,
-<<<<<<< HEAD
-                 n_max_people: int, amenities: Amenities, reviews: List[Review],
-                 country: 'Country'):
-        
-=======
                  n_max_people: int, amenities: List[str], reviews: List[Review],
                  country: 'Country'):
 
->>>>>>> Baptiste
         self.place_id = uuid4()
         self.name = name
         self.description = description
@@ -37,10 +31,6 @@ class Place:
         self.reviews = reviews
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
-<<<<<<< HEAD
-        
-=======
->>>>>>> Baptiste
 
         city = City.get_city_by_name(city_name)
         if not city:
@@ -50,13 +40,8 @@ class Place:
             raise ValueError(f"The city {city_name} is not found in the country {country.name}")
         
         for amenity in amenities:
-<<<<<<< HEAD
-           if not Amenities.get_amenity_by_name(amenity.name):
-               raise ValueError(f"Amenity '{amenity.name}' does not exist")
-=======
             if not Amenities.get_amenity_by_name(amenity):
                 raise ValueError(f"Amenity '{amenity}' does not exist")
->>>>>>> Baptiste
            
     @property
     def name(self):
