@@ -1,4 +1,3 @@
-import re
 from typing import List
 from uuid import UUID, uuid4
 from datetime import datetime
@@ -8,6 +7,8 @@ from review import Review
 from country import Country
 
 class Place:
+    _places = []
+
     def __init__(self, name: str, description: str, address: str, city_name: str,
                  latitude: float, longitude: float, user_id: UUID, creator_id: UUID,
                  n_room: int, n_bathroom: int, price_per_night: float,
@@ -31,6 +32,14 @@ class Place:
         self.reviews = reviews
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
+
+        Place._places.append({
+            'place_id': self.place_id,
+            'name': self.name,
+            'creator_id': self.creator_id,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+        })
 
         city = City.get_city_by_name(city_name)
         if not city:
