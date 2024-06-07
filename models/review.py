@@ -2,7 +2,7 @@ from uuid import UUID, uuid4
 from datetime import datetime
 
 class Review:
-    def __init__(self, user_id: UUID, place_id: UUID, text: str, rating: int):
+    def __init__(self, user_id: UUID, place_id: UUID, text: str, rating: int, places_list):
         self.review_id = uuid4()
         self.user_id = user_id
         self.place_id = place_id
@@ -10,6 +10,12 @@ class Review:
         self.rating = rating
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
+
+        for place in places_list:
+            if place['place_id'] == place_id:
+                place_creator_id = place['creator_id']
+                if user_id == place_creator_id:
+                    raise PermissionError("The creator of the place cannot write a review for their own place.")
 
     @property
     def text(self):

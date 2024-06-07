@@ -139,7 +139,12 @@ class Place:
                 raise PermissionError("creator_id cannot be modified by other users.")
         else:
             self._creator_id = value
-
+    
+    @staticmethod
+    def get_creator_id(place_id: UUID) -> UUID:
+        # Implémentez cette méthode pour obtenir l'ID du créateur de la place
+        pass
+    
     @property
     def n_room(self):
         return self._n_room
