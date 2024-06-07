@@ -1,5 +1,6 @@
 import unittest
 from city import City
+from datetime import datetime
 
 class TestCity(unittest.TestCase):
 
@@ -14,11 +15,6 @@ class TestCity(unittest.TestCase):
         self.assertIsNotNone(city.created_at)
         self.assertIsNotNone(city.updated_at)
     
-    def test_create_duplicate_city(self):
-        City("Paris")
-        with self.assertRaises(ValueError):
-            City("Paris")
-    
     def test_get_all_cities(self):
         city1 = City("Paris")
         city2 = City("Lyon")
@@ -27,5 +23,13 @@ class TestCity(unittest.TestCase):
         self.assertIn(city2, all_cities)
         self.assertEqual(len(all_cities), 2)
 
+    def test_existing_city(self):
+        city1 = City("Paris")
+        city2 = City("Paris")
+        self.assertEqual(city1.city_id, city2.city_id)
+        self.assertEqual(city1.created_at, city2.created_at)
+        # Round to ignore microsecond differences
+        self.assertAlmostEqual(city1.updated_at.timestamp(), city2.updated_at.timestamp(), places=0)
+
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main() 
