@@ -38,10 +38,6 @@ class Place:
 
         if not any(city.name == city_name for city in country.cities):
             raise ValueError(f"The city {city_name} is not found in the country {country.name}")
-        
-        for amenity in amenities:
-            if not Amenities.get_amenity_by_name(amenity):
-                raise ValueError(f"Amenity '{amenity}' does not exist")
            
     @property
     def name(self):
@@ -181,8 +177,10 @@ class Place:
 
     @amenities.setter
     def amenities(self, value):
-        if not isinstance(value, Amenities):
-            raise TypeError("amenities must be an instance of Amenities")
+        if not isinstance(value, list):
+            raise TypeError("amenities must be a list of strings")
+        if not all(isinstance(amenity, str) for amenity in value):
+            raise TypeError("all amenities must be strings")
         self._amenities = value
 
     @property
