@@ -1,35 +1,48 @@
 import unittest
-from city import City
+from uuid import UUID
 from datetime import datetime
+from city import City 
 
 class TestCity(unittest.TestCase):
-
+    
     def setUp(self):
-        # This will run before every test
-        City._cities = {}  # Reset the class variable to ensure tests are isolated
-
+        City._cities = []
+    
     def test_create_city(self):
         city = City("Paris")
         self.assertEqual(city.name, "Paris")
-        self.assertIsNotNone(city.city_id)
-        self.assertIsNotNone(city.created_at)
-        self.assertIsNotNone(city.updated_at)
+        self.assertIsInstance(city.city_id, UUID)
+        self.assertIsInstance(city.created_at, datetime)
+        self.assertIsInstance(city.updated_at, datetime)
+        self.assertEqual(len(City.get_all_cities()), 1)
+    
+    def test_get_city_by_name(self):
+        City("Paris")
+        city = City.get_city_by_name("Paris")
+        self.assertIsNotNone(city)
+        self.assertEqual(city['name'], "Paris")
+    
+    def test_create_duplicate_city(self):
+        City("Paris")
+        with self.assertRaises(ValueError):
+            City("Paris")
+    
+    def test_update_city(self):
+        city = City("Los Angeles")
+        city.update(name="LA")
+        updated_city = City.get_city_by_name("LA")
+        self.assertIsNotNone(updated_city)
+        self.assertEqual(updated_city['name'], "LA")
+        self.assertNotEqual(updated_city['updated_at'], updated_city['created_at'])
     
     def test_get_all_cities(self):
-        city1 = City("Paris")
-        city2 = City("Lyon")
-        all_cities = list(City.get_all_cities())
-        self.assertIn(city1, all_cities)
-        self.assertIn(city2, all_cities)
-        self.assertEqual(len(all_cities), 2)
+        City("Paris")
+        City("New York")
+        cities = City.get_all_cities()
+        self.assertEqual(len(cities), 2)
+        city_names = [city['name'] for city in cities]
+        self.assertIn("Paris", city_names)
+        self.assertIn("New York", city_names)
 
-    def test_existing_city(self):
-        city1 = City("Paris")
-        city2 = City("Paris")
-        self.assertEqual(city1.city_id, city2.city_id)
-        self.assertEqual(city1.created_at, city2.created_at)
-        # Round to ignore microsecond differences
-        self.assertAlmostEqual(city1.updated_at.timestamp(), city2.updated_at.timestamp(), places=0)
-
-if __name__ == '__main__':
-    unittest.main() 
+if __name__ == "__main__":
+    unittest.main()
