@@ -2,12 +2,15 @@ from abc import ABC, abstractmethod
 from typing import List, Union
 from uuid import UUID
 from datetime import datetime
-from ..models.city import City
-from ..models.amenity import Amenities
-from ..models.review import Review
-from ..models.country import Country
-from ..models.place import Place
-from ..models.user import User
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from models.city import City
+from models.amenity import Amenities
+from models.review import Review
+from models.country import Country
+from models.place import Place
+from models.user import User
 
 class IPersistenceManager(ABC):
     @abstractmethod
