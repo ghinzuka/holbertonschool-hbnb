@@ -28,13 +28,6 @@ class User:
         if place in self.places:
             self.places.remove(place)
 
-    def add_review(self, review: Review):
-        self.reviews.append(review)
-
-    def remove_review(self, review: Review):
-        if review in self.reviews:
-            self.reviews.remove(review)
-
     def update(self, **kwargs):
         for key, value in kwargs.items():
             if hasattr(self, key):
