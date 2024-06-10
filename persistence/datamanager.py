@@ -1,3 +1,5 @@
+from persistence import IPersistenceManager
+
 class DataManager(IPersistenceManager):
     def save(self, entity):
         # Logique pour sauvegarder l'entité dans le stockage
