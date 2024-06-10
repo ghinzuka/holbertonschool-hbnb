@@ -5,6 +5,7 @@ from review import Review
 
 class User:
     _registered_emails = set()
+    _users_data = []
 
     def __init__(self, email: str, password: str, first_name: str, last_name: str):
         if email in User._registered_emails:
@@ -19,6 +20,19 @@ class User:
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
         User._registered_emails.add(email)
+        
+        # Add user data to the list of dictionaries
+        User._users_data.append({
+            'user_id': self.user_id,
+            'email': self.email,
+            'password': self.password,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'places': self.places,
+            'reviews': self.reviews,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+        })
 
     def add_place(self, place: Place):
         place.added_by_user_id = self.user_id
@@ -27,13 +41,6 @@ class User:
     def remove_place(self, place: Place):
         if place in self.places:
             self.places.remove(place)
-
-    def add_review(self, review: Review):
-        self.reviews.append(review)
-
-    def remove_review(self, review: Review):
-        if review in self.reviews:
-            self.reviews.remove(review)
 
     def update(self, **kwargs):
         for key, value in kwargs.items():
@@ -58,3 +65,19 @@ class User:
     def remove_user(cls, user):
         if user.email in cls._registered_emails:
             cls._registered_emails.remove(user.email)
+            # Remove user data from the list
+            cls._users_data = [data for data in cls._users_data if data['email'] != user.email]
+
+    @classmethod
+    def find_user_by_email(cls, email):
+        for user_data in cls._users_data:
+            if user_data['email'] == email:
+                return cls(**user_data)
+        return None
+
+    @classmethod
+    def find_user_by_id(cls, user_id):
+        for user_data in cls._users_data:
+            if user_data['user_id'] == user_id:
+                return cls(**user_data)
+        return None
