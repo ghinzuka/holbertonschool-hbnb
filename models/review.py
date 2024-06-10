@@ -15,7 +15,7 @@ class Review:
             if place['place_id'] == place_id:
                 place_creator_id = place['creator_id']
                 if user_id == place_creator_id:
-                    raise PermissionError("The creator of the place cannot write a review for their own place.")
+                    raise PermissionError("The creator of the place cannot write a review for their own plac.")
 
     @property
     def text(self):
