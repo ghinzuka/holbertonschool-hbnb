@@ -1,8 +1,13 @@
 from uuid import UUID, uuid4
 from datetime import datetime
+from place import Place
 
 class Review:
-    def __init__(self, user_id: UUID, place_id: UUID, text: str, rating: int, places_list):
+    _reviews = []
+
+    def __init__(self, user_id: UUID, place_id: UUID, text: str, rating: int, places_list=None):
+        if places_list is None:
+            places_list = Place.get_places()
         self.review_id = uuid4()
         self.user_id = user_id
         self.place_id = place_id
@@ -17,10 +22,28 @@ class Review:
                 if user_id == place_creator_id:
                     raise PermissionError("The creator of the place cannot write a review for their own place.")
 
+        Review._reviews.append({
+            'review_id': self.review_id,
+            'user_id': self.user_id,
+            'place_id': self.place_id,
+            'text': self.text,
+            'rating': self.rating,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+        })
+
+    @classmethod
+    def get_reviews(cls):
+        return cls._reviews
+
+    @staticmethod
+    def get_reviews_by_place_id(place_id: UUID):
+        return [review for review in Review._reviews if review['place_id'] == place_id]
+
     @property
     def text(self):
         return self._text
-s
+
     @text.setter
     def text(self, value):
         if not isinstance(value, str) or not value:
