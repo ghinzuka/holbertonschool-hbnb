@@ -1,7 +1,7 @@
 from uuid import UUID, uuid4
 from datetime import datetime
-from place import Place
 from review import Review
+from place import Place
 
 class User:
     _registered_emails = set()
@@ -15,8 +15,8 @@ class User:
         self.password = password
         self.first_name = first_name
         self.last_name = last_name
-        self.places = []
-        self.reviews = []
+        self.place_names = []  # Placeholder for place names
+        self.reviews = []  
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
         User._registered_emails.add(email)
@@ -28,19 +28,11 @@ class User:
             'password': self.password,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'places': self.places,
+            'place_names': self.place_names,
             'reviews': self.reviews,
             'created_at': self.created_at,
             'updated_at': self.updated_at
         })
-
-    def add_place(self, place: Place):
-        place.added_by_user_id = self.user_id
-        self.places.append(place)
-
-    def remove_place(self, place: Place):
-        if place in self.places:
-            self.places.remove(place)
 
     def update(self, **kwargs):
         for key, value in kwargs.items():
@@ -54,12 +46,19 @@ class User:
                 setattr(self, key, value)
         self.updated_at = datetime.now()
 
-    def get_reviews_ids(self):
-        reviews_ids = []
-        for review in self.reviews:
-            if review.user_id == self.user_id:
-                reviews_ids.append(review.review_id)
-        return reviews_ids 
+    def load_places_names(self):
+        self.place_names = []
+        for place_data in Place.get_places():
+            if place_data['user_id'] == self.user_id:
+                place_name = place_data['name']
+                self.place_names.append(place_name)
+
+    def load_reviews(self):
+        self.reviews = []
+        for review_data in Review.get_reviews():
+            if review_data['user_id'] == self.user_id:
+                review = Review(**review_data)
+                self.reviews.append(review)
 
     @classmethod
     def remove_user(cls, user):
