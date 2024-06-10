@@ -1,7 +1,9 @@
 import unittest
-
-from country import Country
-from city import City
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from models.country import Country
+from models.city import City
 
 class TestCountry(unittest.TestCase):
 

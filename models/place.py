@@ -12,8 +12,7 @@ class Place:
     def __init__(self, name: str, description: str, address: str, city_name: str,
                  latitude: float, longitude: float, user_id: UUID, creator_id: UUID,
                  n_room: int, n_bathroom: int, price_per_night: float,
-                 n_max_people: int, amenities: List[str], reviews: List[Review],
-                 country: 'Country'):
+                 n_max_people: int, amenities: List[str], country: 'Country'):
 
         self.place_id = uuid4()
         self.name = name
@@ -29,14 +28,27 @@ class Place:
         self.price_per_night = price_per_night
         self.n_max_people = n_max_people
         self.amenities = amenities
-        self.reviews = reviews
+        self.reviews = Review.get_reviews_by_place_id(self.place_id)  # Fetch associated reviews
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
 
-        Place._places.append({
+        # Ajouter un dictionnaire représentant cette instance à la liste _places
+        self._places.append({
             'place_id': self.place_id,
             'name': self.name,
+            'description': self.description,
+            'address': self.address,
+            'city_name': self.city_name,
+            'latitude': self.latitude,
+            'longitude': self.longitude,
+            'user_id': self.user_id,
             'creator_id': self.creator_id,
+            'n_room': self.n_room,
+            'n_bathroom': self.n_bathroom,
+            'price_per_night': self.price_per_night,
+            'n_max_people': self.n_max_people,
+            'amenities': self.amenities,
+            'reviews': self.reviews,
             'created_at': self.created_at,
             'updated_at': self.updated_at
         })
@@ -47,7 +59,18 @@ class Place:
 
         if not any(city.name == city_name for city in country.cities):
             raise ValueError(f"The city {city_name} is not found in the country {country.name}")
-           
+
+    @classmethod
+    def get_places(cls):
+        return cls._places
+
+    @classmethod
+    def get_place_by_id(cls, place_id: UUID):
+        for place in cls._places:
+            if place['place_id'] == place_id:
+                return place
+        return None
+
     @property
     def name(self):
         return self._name
@@ -235,6 +258,3 @@ class Place:
             if hasattr(self, key):
                 setattr(self, key, value)
         self.updated_at = datetime.now()
-
-
-

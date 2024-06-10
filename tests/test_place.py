@@ -1,10 +1,13 @@
 import unittest
 from datetime import datetime
 from uuid import UUID, uuid4
-from city import City
-from country import Country
-from review import Review
-from place import Place
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from models.city import City
+from models.country import Country
+from models.review import Review
+from models.place import Place
 
 class TestPlace(unittest.TestCase):
     def setUp(self):

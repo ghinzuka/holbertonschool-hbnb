@@ -1,7 +1,10 @@
 import unittest
 from uuid import UUID
 from datetime import datetime
-from amenity import Amenities
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from models.amenity import Amenities
 
 class TestAmenities(unittest.TestCase):
 
