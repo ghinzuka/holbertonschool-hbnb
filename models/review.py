@@ -87,3 +87,8 @@ class Review:
             if hasattr(self, key):
                 setattr(self, key, value)
         self.updated_at = datetime.now()
+
+    @classmethod
+    def delete_review(cls, review_id: UUID):
+        cls._reviews = [review for review in cls._reviews if review['review_id'] != review_id]
+

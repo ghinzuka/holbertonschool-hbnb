@@ -12,8 +12,7 @@ class Place:
     def __init__(self, name: str, description: str, address: str, city_name: str,
                  latitude: float, longitude: float, user_id: UUID, creator_id: UUID,
                  n_room: int, n_bathroom: int, price_per_night: float,
-                 n_max_people: int, amenities: List[str], reviews: List[Review],
-                 country: 'Country'):
+                 n_max_people: int, amenities: List[str], country: 'Country'):
 
         self.place_id = uuid4()
         self.name = name
@@ -29,7 +28,7 @@ class Place:
         self.price_per_night = price_per_night
         self.n_max_people = n_max_people
         self.amenities = amenities
-        self.reviews = reviews
+        self.reviews = Review.get_reviews_by_place_id(self.place_id)  # Fetch associated reviews
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
 
@@ -259,4 +258,3 @@ class Place:
             if hasattr(self, key):
                 setattr(self, key, value)
         self.updated_at = datetime.now()
-
