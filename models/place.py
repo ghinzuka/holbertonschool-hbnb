@@ -1,4 +1,3 @@
-import re
 from typing import List
 from uuid import UUID, uuid4
 from datetime import datetime
@@ -8,6 +7,8 @@ from review import Review
 from country import Country
 
 class Place:
+    _places = []
+
     def __init__(self, name: str, description: str, address: str, city_name: str,
                  latitude: float, longitude: float, user_id: UUID, creator_id: UUID,
                  n_room: int, n_bathroom: int, price_per_night: float,
@@ -32,13 +33,45 @@ class Place:
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
 
+        # Ajouter un dictionnaire représentant cette instance à la liste _places
+        self._places.append({
+            'place_id': self.place_id,
+            'name': self.name,
+            'description': self.description,
+            'address': self.address,
+            'city_name': self.city_name,
+            'latitude': self.latitude,
+            'longitude': self.longitude,
+            'user_id': self.user_id,
+            'creator_id': self.creator_id,
+            'n_room': self.n_room,
+            'n_bathroom': self.n_bathroom,
+            'price_per_night': self.price_per_night,
+            'n_max_people': self.n_max_people,
+            'amenities': self.amenities,
+            'reviews': self.reviews,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at
+        })
+
         city = City.get_city_by_name(city_name)
         if not city:
             raise ValueError(f"The city {city_name} is not found")
 
         if not any(city.name == city_name for city in country.cities):
             raise ValueError(f"The city {city_name} is not found in the country {country.name}")
-           
+
+    @classmethod
+    def get_places(cls):
+        return cls._places
+
+    @classmethod
+    def get_place_by_id(cls, place_id: UUID):
+        for place in cls._places:
+            if place['place_id'] == place_id:
+                return place
+        return None
+
     @property
     def name(self):
         return self._name
@@ -130,7 +163,12 @@ class Place:
                 raise PermissionError("creator_id cannot be modified by other users.")
         else:
             self._creator_id = value
-
+    
+    @staticmethod
+    def get_creator_id(place_id: UUID) -> UUID:
+        # Implémentez cette méthode pour obtenir l'ID du créateur de la place
+        pass
+    
     @property
     def n_room(self):
         return self._n_room
@@ -221,6 +259,4 @@ class Place:
             if hasattr(self, key):
                 setattr(self, key, value)
         self.updated_at = datetime.now()
-
-
 
