@@ -14,8 +14,11 @@ class TestPlace(unittest.TestCase):
         self.user_id = uuid4()
         self.creator_id = uuid4()
         self.amenities = ["Wifi", "Pool"]
-        self.reviews = [Review(uuid4(), uuid4(), "Great place!", 5), 
-                        Review(uuid4(), uuid4(), "Nice location", 4)]
+        self.review_user_id = uuid4()
+        self.review_place_id = uuid4()
+        self.review_text = "Great place!"
+        self.review_rating = 5
+        self.reviews = [Review(self.review_user_id, self.review_place_id, self.review_text, self.review_rating, [])]  # Updated with places_list parameter
         self.place = Place(
             "Test Place",
             "Test Description",
@@ -35,23 +38,6 @@ class TestPlace(unittest.TestCase):
         )
 
     def test_valid_place_creation(self):
-        print("Name:", self.place.name)
-        print("Description:", self.place.description)
-        print("Address:", self.place.address)
-        print("City Name:", self.place.city_name)
-        print("Latitude:", self.place.latitude)
-        print("Longitude:", self.place.longitude)
-        print("User ID:", self.place.user_id)
-        print("Creator ID:", self.place.creator_id)
-        print("Number of Rooms:", self.place.n_room)
-        print("Number of Bathrooms:", self.place.n_bathroom)
-        print("Price per Night:", self.place.price_per_night)
-        print("Maximum People:", self.place.n_max_people)
-        print("Amenities:", self.place.amenities)
-        print("Reviews:", self.place.reviews)
-        print("Created At:", self.place.created_at)
-        print("Updated At:", self.place.updated_at)
-
         self.assertEqual(self.place.name, "Test Place")
         self.assertEqual(self.place.description, "Test Description")
         self.assertEqual(self.place.address, "123 Test St")
@@ -65,7 +51,11 @@ class TestPlace(unittest.TestCase):
         self.assertEqual(self.place.price_per_night, 100.0)
         self.assertEqual(self.place.n_max_people, 4)
         self.assertEqual(self.place.amenities, self.amenities)
-        self.assertEqual(self.place.reviews, self.reviews)
+        self.assertEqual(len(self.place.reviews), 1)
+        self.assertEqual(self.place.reviews[0].user_id, self.review_user_id)
+        self.assertEqual(self.place.reviews[0].place_id, self.review_place_id)
+        self.assertEqual(self.place.reviews[0].text, self.review_text)
+        self.assertEqual(self.place.reviews[0].rating, self.review_rating)
         self.assertIsInstance(self.place.created_at, datetime)
         self.assertIsInstance(self.place.updated_at, datetime)
 
