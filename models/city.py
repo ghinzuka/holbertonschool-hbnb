@@ -74,5 +74,3 @@ class City:
                 city['name'] = self.name
                 city['updated_at'] = self.updated_at
                 break
-
-**
