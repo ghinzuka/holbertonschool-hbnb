@@ -52,4 +52,20 @@ class User(BaseModel):
         if not isinstance(value, str) or not value:
             raise TypeError("last_name must be a non-empty string")
         self._last_name = value
+    
+    def to_dict(self):
+        return {
+            "email": self.email,
+            "password": self.password,
+            "first_name": self.first_name,
+            "last_name": self.last_name
+        }
 
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            email=data["email"],
+            password=data["password"],
+            first_name=data["first_name"],
+            last_name=data["last_name"]
+        )
