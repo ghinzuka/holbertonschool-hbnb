@@ -14,3 +14,16 @@ class City(BaseModel):
         if not isinstance(value, str) or not value:
             raise TypeError("name must be a non-empty string")
         self._name = value
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "id": self.id 
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            name_city=data["name"],
+            city_id=data["id"]
+            )
