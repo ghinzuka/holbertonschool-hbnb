@@ -49,8 +49,8 @@ class TestModels(unittest.TestCase):
         self.assertIsNotNone(review.updated_at)
 
     def test_amenity_creation(self):
-        amenity = Amenities(['Wi-Fi', 'Pool'])
-        self.assertEqual(amenity.names, ['Wi-Fi', 'Pool'])
+        amenity = Amenities("Pool")
+        self.assertEqual(amenity.name, "Pool")
 
     def test_city_creation(self):
         city = City('New York')
@@ -67,6 +67,14 @@ class TestModels(unittest.TestCase):
         self.assertEqual(country.city, city)
         self.assertIsNotNone(country.created_at)
         self.assertIsNotNone(country.updated_at)
+
+    def test_base_model(self):
+        base = BaseModel()
+        self.assertIsNotNone(base.id)
+        self.assertIsNotNone(base.created_at)
+        self.assertIsNotNone(base.updated_at)
+        base.save()
+        self.assertNotEqual(base.created_at, base.updated_at)
 
 if __name__ == '__main__':
     unittest.main()
