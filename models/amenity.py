@@ -14,3 +14,15 @@ class Amenities(BaseModel):
         if not isinstance(value, str) or not value:
             raise TypeError("name must be a non-empty string")
         self.__name = value
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "id": self.id
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            name=data["name"]
+            )
