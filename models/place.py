@@ -1,75 +1,20 @@
-from typing import List
-from uuid import UUID, uuid4
-from datetime import datetime
-from city import City
-from amenity import Amenities
-from review import Review
-from country import Country
+from base import BaseModel
 
-class Place:
-    _places = []
-
+class Place(BaseModel):
     def __init__(self, name: str, description: str, address: str, city_name: str,
-                 latitude: float, longitude: float, user_id: UUID, creator_id: UUID,
-                 n_room: int, n_bathroom: int, price_per_night: float,
-                 n_max_people: int, amenities: List[str], country: 'Country'):
-
-        self.place_id = uuid4()
+                 latitude: float, longitude: float,n_room: int, n_bathroom: int,
+                 price_per_night: float, n_max_people: int, amenities: str, reviews: str):
+        super().__init__()
         self.name = name
         self.description = description
         self.address = address
         self.city_name = city_name
         self.latitude = latitude
         self.longitude = longitude
-        self.user_id = user_id
-        self.creator_id = creator_id 
         self.n_room = n_room
         self.n_bathroom = n_bathroom
         self.price_per_night = price_per_night
         self.n_max_people = n_max_people
-        self.amenities = amenities
-        self.reviews = Review.get_reviews_by_place_id(self.place_id)  # Fetch associated reviews
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
-
-        # Ajouter un dictionnaire représentant cette instance à la liste _places
-        self._places.append({
-            'place_id': self.place_id,
-            'name': self.name,
-            'description': self.description,
-            'address': self.address,
-            'city_name': self.city_name,
-            'latitude': self.latitude,
-            'longitude': self.longitude,
-            'user_id': self.user_id,
-            'creator_id': self.creator_id,
-            'n_room': self.n_room,
-            'n_bathroom': self.n_bathroom,
-            'price_per_night': self.price_per_night,
-            'n_max_people': self.n_max_people,
-            'amenities': self.amenities,
-            'reviews': self.reviews,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
-        })
-
-        city = City.get_city_by_name(city_name)
-        if not city:
-            raise ValueError(f"The city {city_name} is not found")
-
-        if not any(city.name == city_name for city in country.cities):
-            raise ValueError(f"The city {city_name} is not found in the country {country.name}")
-
-    @classmethod
-    def get_places(cls):
-        return cls._places
-
-    @classmethod
-    def get_place_by_id(cls, place_id: UUID):
-        for place in cls._places:
-            if place['place_id'] == place_id:
-                return place
-        return None
 
     @property
     def name(self):
@@ -140,35 +85,6 @@ class Place:
         self._longitude = value
 
     @property
-    def user_id(self):
-        return self._user_id
-
-    @user_id.setter
-    def user_id(self, value):
-        if not isinstance(value, UUID) or value is None:
-            raise TypeError("user_id must be a non-empty UUID")
-        self._user_id = value
-
-    @property
-    def creator_id(self):
-        return self._creator_id
-
-    @creator_id.setter
-    def creator_id(self, value):
-        if not isinstance(value, UUID) or value is None:
-            raise TypeError("creator_id must be a non-empty UUID")
-        if hasattr(self, '_creator_id') and self._creator_id is not None:
-            if self._user_id != value:
-                raise PermissionError("creator_id cannot be modified by other users.")
-        else:
-            self._creator_id = value
-    
-    @staticmethod
-    def get_creator_id(place_id: UUID) -> UUID:
-        # Implémentez cette méthode pour obtenir l'ID du créateur de la place
-        pass
-    
-    @property
     def n_room(self):
         return self._n_room
 
@@ -209,52 +125,21 @@ class Place:
         self._n_max_people = value
 
     @property
-    def amenities(self):
-        return self._amenities
-
-    @amenities.setter
-    def amenities(self, value):
-        if not isinstance(value, list):
-            raise TypeError("amenities must be a list of strings")
-        if not all(isinstance(amenity, str) for amenity in value):
-            raise TypeError("all amenities must be strings")
-        self._amenities = value
-
-    @property
     def reviews(self):
         return self._reviews
 
     @reviews.setter
     def reviews(self, value):
-        if not all(isinstance(review, Review) for review in value):
-            raise TypeError("all reviews must be instances of Review")
-        self._reviews = value
-
+        if not isinstance(value, str) or not value:
+            raise TypeError("reviews must be a non-empty string")
+        self._name = value
+    
     @property
-    def created_at(self):
-        return self._created_at
+    def amenities(self):
+        return self._amenities
 
-    @created_at.setter
-    def created_at(self, value):
-        if not isinstance(value, datetime):
-            raise TypeError("created_at must be a datetime instance")
-        self._created_at = value
-
-    @property
-    def updated_at(self):
-        return self._updated_at
-
-    @updated_at.setter
-    def updated_at(self, value):
-        if not isinstance(value, datetime):
-            raise TypeError("updated_at must be a datetime instance")
-        self._updated_at = value
-
-    def update(self, user_id: UUID, **kwargs):
-        if user_id != self.creator_id:
-            raise PermissionError("Only the creator can update this place.")
-        
-        for key, value in kwargs.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-        self.updated_at = datetime.now()
+    @amenities.setter
+    def amenities(self, value):
+        if not isinstance(value, str) or not value:
+            raise TypeError("amenities must be a non-empty string")
+        self._name = value
