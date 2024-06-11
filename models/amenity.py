@@ -1,17 +1,16 @@
 from .base import BaseModel
 
-class Amenities:
-    def __init__(self, names: str):
+class Amenities(BaseModel):
+    def __init__(self, name: str):
         super().__init__()
-        self.names = names 
+        self.name = name 
 
     @property
-    def names(self):
-        return self.__names
+    def name(self):
+        return self.__name
 
-    @names.setter
-    def names(self, value):
-        print("Checking names:", value)  # Ajouter cette ligne pour voir les noms vérifiés
-        if not all(isinstance(name, str) for name in value):
-            raise TypeError("Tous les noms doivent être des chaînes de caractères")
-        self.__names = list(set(value))  # Convertir en ensemble pour éliminer les doublons, puis reconvertir en liste
+    @name.setter
+    def name(self, value):
+        if not isinstance(value, str) or not value:
+            raise TypeError("name must be a non-empty string")
+        self.__name = value
