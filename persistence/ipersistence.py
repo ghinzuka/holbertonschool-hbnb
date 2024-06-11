@@ -2,11 +2,11 @@ from abc import ABC, abstractmethod
 
 class IPersistenceManager(ABC):
     @abstractmethod
-    def save(self, entity):
+    def create(self, entity):
         pass
 
     @abstractmethod
-    def get(self, entity_id, entity_type):
+    def read(self, entity_id, entity_type):
         pass
 
     @abstractmethod

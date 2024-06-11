@@ -1,18 +1,48 @@
-from persistence import IPersistenceManager
+from ipersistence import IPersistenceManager
+import json
+import os
 
 class DataManager(IPersistenceManager):
-    def save(self, entity):
-        # Logique pour sauvegarder l'entité dans le stockage
-        pass
+    def __init__(self, filename):
+        self.filename = filename
+        if not os.path.exists(self.filename):
+            with open(self.filename, 'w') as file:
+                json.dump([], file)
 
-    def get(self, entity_id, entity_type):
-        # Logique pour récupérer une entité basée sur l'ID et le type
-        pass
+    def _read_file(self):
+        with open(self.filename, 'r') as file:
+            return json.load(file)
 
-    def update(self, entity):
-        # Logique pour mettre à jour une entité dans le stockage
-        pass
+    def _write_file(self, data):
+        with open(self.filename, 'w') as file:
+            json.dump(data, file)
 
-    def delete(self, entity_id, entity_type):
-        # Logique pour supprimer une entité du stockage
-        pass
+    def create(self, entity):
+        data = self._read_file()
+        data.append(entity.__dict__)
+        self._write_file(data)
+
+    def read(self, entity_id):
+        data = self._read_file()
+        for item in data:
+            if item['id'] == str(entity_id):
+                return item
+        return None
+
+    def update(self, entity_id, new_data):
+        data = self._read_file()
+        for index, item in enumerate(data):
+            if item['id'] == str(entity_id):
+                data[index].update(new_data)
+                self._write_file(data)
+                return True
+        return False
+
+    def delete(self, entity_id):
+        data = self._read_file()
+        for index, item in enumerate(data):
+            if item['id'] == str(entity_id):
+                data.pop(index)
+                self._write_file(data)
+                return True
+        return False
