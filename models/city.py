@@ -24,6 +24,5 @@ class City(BaseModel):
     @classmethod
     def from_dict(cls, data):
         return cls(
-            name_city=data["name"],
-            city_id=data["id"]
+            name=data["name"]
             )

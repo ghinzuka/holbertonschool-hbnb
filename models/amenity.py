@@ -24,6 +24,5 @@ class Amenities(BaseModel):
     @classmethod
     def from_dict(cls, data):
         return cls(
-            name=data["name"],
-            amenity_id=data["id"]
+            name=data["name"]
             )

@@ -39,6 +39,5 @@ class Review(BaseModel):
     def from_dict(cls, data):
         return cls(
             text=data["text"],
-            rating=data["rating"],
-            review_id=data["id"]
+            rating=data["rating"]
         )

@@ -185,6 +185,5 @@ class Place(BaseModel):
             price_per_night=data["price_per_night"],
             n_max_people=data["n_max_people"],
             amenities=data["amenities"],
-            reviews=data["reviews"],
-            place_id=data["id"]
+            reviews=data["reviews"]
         )

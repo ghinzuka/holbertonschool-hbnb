@@ -68,7 +68,5 @@ class User(BaseModel):
             email=data["email"],
             password=data["password"],
             first_name=data["first_name"],
-            last_name=data["last_name"],
-            user_id=data["id"]  
-            
+            last_name=data["last_name"]    
         )

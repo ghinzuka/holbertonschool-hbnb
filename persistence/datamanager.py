@@ -26,16 +26,16 @@ class DataManager:
         key = f"{entity.id}_{type(entity).__name__}"  # Utiliser une chaîne pour représenter la clé
         self.data[key] = entity.to_dict()
         self.save_data()
-        print(f"Entity {type(entity).__name__} with ID {entity.id} created. Name: {entity.first_name} {entity.last_name}")
+        print(f"Entity {type(entity).__name__} with ID {entity.id} created.")
 
     def read(self, entity_id, entity_class):
         key = f"{entity_id}_{entity_class.__name__}"
         data = self.data.get(key)
         if data:
-            print(f"Entity {type(entity_class).__name__} with ID {entity_id} retrieved.")
+            print(f"Entity {entity_class.__name__} with ID {entity_id} retrieved.")
             return entity_class.from_dict(data)
         else:
-            print(f"Entity {type(entity_class).__name__} with ID {entity_id} not found.")
+            print(f"Entity {entity_class.__name__} with ID {entity_id} not found.")
             return None
 
     def update(self, entity):
@@ -43,7 +43,7 @@ class DataManager:
         if key in self.data:
             self.data[key] = entity.to_dict()
             self.save_data()
-            print(f"Entity {type(entity).__name__} with ID {entity.id} updated. Name: {entity.first_name} {entity.last_name}")
+            print(f"Entity {type(entity).__name__} with ID {entity.id} updated.")
         else:
             print(f"Entity {type(entity).__name__} with ID {entity.id} not found. Update failed.")
 
@@ -52,6 +52,6 @@ class DataManager:
         if key in self.data:
             del self.data[key]
             self.save_data()
-            print(f"Entity {type(entity_class).__name__} with ID {entity_id} deleted.")
+            print(f"Entity {entity_class.__name__} with ID {entity_id} deleted.")
         else:
-            print(f"Entity {type(entity_class).__name__} with ID {entity_id} not found. Deletion failed.")
+            print(f"Entity {entity_class.__name__} with ID {entity_id} not found. Deletion failed.")
