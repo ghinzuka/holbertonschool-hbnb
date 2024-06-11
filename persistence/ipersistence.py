@@ -6,13 +6,13 @@ class IPersistenceManager(ABC):
         pass
 
     @abstractmethod
-    def read(self, entity_id):
+    def read(self, entity_id, entity_type):
         pass
 
     @abstractmethod
-    def update(self, entity_id, data):
+    def update(self, entity):
         pass
 
     @abstractmethod
-    def delete(self, entity_id):
+    def delete(self, entity_id, entity_type):
         pass
