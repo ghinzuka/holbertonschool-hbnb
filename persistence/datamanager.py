@@ -24,19 +24,24 @@ class DataManager:
         key = f"{entity.id}_{type(entity).__name__}"  # Utiliser une chaîne pour représenter la clé
         self.data[key] = entity.to_dict()
         self.save_data()
+        print(f"Entity {type(entity).__name__} with ID {entity.id} created.")
 
     def read(self, entity_id, entity_class):
         key = f"{entity_id}_{entity_class.__name__}"
         data = self.data.get(key)
         if data:
+            print(f"Entity {entity_class.__name__} with ID {entity_id} retrieved.")
             return entity_class.from_dict(data)
-        return None
+        else:
+            print(f"Entity {entity_class.__name__} with ID {entity_id} not found.")
+            return None
 
     def update(self, entity):
         key = f"{entity.id}_{type(entity).__name__}"
         if key in self.data:
             self.data[key] = entity.to_dict()
             self.save_data()
+            print(f"Entity {type(entity).__name__} with ID {entity.id} updated.")
         else:
             raise ValueError(f"Entity with key '{key}' does not exist in the data store.")
 
@@ -45,5 +50,6 @@ class DataManager:
         if key in self.data:
             del self.data[key]
             self.save_data()
+            print(f"Entity {entity_class.__name__} with ID {entity_id} deleted.")
         else:
-            raise ValueError(f"Entity with key '{key}' does not exist in the data store.")
+            print(f"Entity {entity_class.__name__} with ID {entity_id} not found. Deletion failed.")

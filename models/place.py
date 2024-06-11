@@ -153,3 +153,37 @@ class Place(BaseModel):
         if not isinstance(value, str) or not value:
             raise TypeError("amenities must be a non-empty string")
         self._amenities = value
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "description": self.description,
+            "address": self.address,
+            "city_name": self.city_name,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "n_room": self.n_room,
+            "n_bathroom": self.n_bathroom,
+            "price_per_night": self.price_per_night,
+            "n_max_people": self.n_max_people,
+            "amenities": self.amenities,
+            "reviews": self.reviews,
+            "id": self.id 
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            name=data["name"],
+            description=data["description"],
+            address=data["address"],
+            city_name=data["city_name"],
+            latitude=data["latitude"],
+            longitude=data["longitude"],
+            n_room=data["n_room"],
+            n_bathroom=data["n_bathroom"],
+            price_per_night=data["price_per_night"],
+            n_max_people=data["n_max_people"],
+            amenities=data["amenities"],
+            reviews=data["reviews"]
+        )
