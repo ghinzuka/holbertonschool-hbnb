@@ -58,7 +58,8 @@ class User(BaseModel):
             "email": self.email,
             "password": self.password,
             "first_name": self.first_name,
-            "last_name": self.last_name
+            "last_name": self.last_name,
+            "id": self.id         
         }
 
     @classmethod
@@ -67,5 +68,7 @@ class User(BaseModel):
             email=data["email"],
             password=data["password"],
             first_name=data["first_name"],
-            last_name=data["last_name"]
+            last_name=data["last_name"],
+            user_id=data["id"]  
+            
         )
