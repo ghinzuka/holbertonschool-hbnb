@@ -1,15 +1,18 @@
-import json
-import os
+from abc import ABC, abstractmethod
 
-class IPersistenceManager:
+class IPersistenceManager(ABC):
+    @abstractmethod
     def create(self, entity):
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def read(self, entity_id):
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def update(self, entity_id, data):
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def delete(self, entity_id):
-        raise NotImplementedError
+        pass
