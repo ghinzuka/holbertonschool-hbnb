@@ -27,3 +27,18 @@ class Review(BaseModel):
         if value < 1 or value > 5:
             raise ValueError("rating must be between 1 and 5")
         self._rating = value
+
+    def to_dict(self):
+        return {
+            "text": self.text,
+            "rating": self.rating,
+            "id": self.id  
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            text=data["text"],
+            rating=data["rating"],
+            review_id=data["id"]
+        )
