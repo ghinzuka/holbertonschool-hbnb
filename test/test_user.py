@@ -18,7 +18,7 @@ class TestUser(unittest.TestCase):
 
     def test_user_crud(self):
         # Création d'un utilisateur
-        user = User('email@example.com', 'password', 'John', 'Doe')
+        user = User(email='email@example.com', password='password', first_name='John', last_name='Doe')
         self.datamanager.create(user)
 
         # Récupération de l'utilisateur
@@ -27,6 +27,7 @@ class TestUser(unittest.TestCase):
         self.assertEqual(retrieved_user.password, 'password')
         self.assertEqual(retrieved_user.first_name, 'John')
         self.assertEqual(retrieved_user.last_name, 'Doe')
+        self.assertIsNotNone(retrieved_user.id)  # Vérifier que l'ID a été correctement défini
 
         # Mise à jour de l'utilisateur
         user.first_name = 'Jane'
