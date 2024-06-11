@@ -1,4 +1,4 @@
-from base import BaseModel
+from .base import BaseModel
 
 class Country(BaseModel):
     def __init__(self, city, name: str):

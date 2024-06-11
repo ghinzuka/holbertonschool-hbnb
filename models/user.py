@@ -1,5 +1,4 @@
-from base import BaseModel
-
+from .base import BaseModel
 
 class User(BaseModel):
     def __init__(

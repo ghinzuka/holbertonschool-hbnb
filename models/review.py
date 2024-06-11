@@ -1,4 +1,4 @@
-from base import BaseModel
+from .base import BaseModel
 
 class Review(BaseModel):
     def __init__(self, text: str, rating: int):
