@@ -52,3 +52,4 @@ class User(BaseModel):
         if not isinstance(value, str) or not value:
             raise TypeError("last_name must be a non-empty string")
         self._last_name = value
+
