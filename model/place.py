@@ -1,20 +1,20 @@
-from typing import List
-from uuid import UUID, uuid4
+from basemodel import BaseModel
+from uuid import UUID
 from datetime import datetime
 from city import City
-from amenity import Amenities
 from review import Review
 from country import Country
 
-class Place:
+
+class Place(BaseModel):
     _places = []
 
     def __init__(self, name: str, description: str, address: str, city_name: str,
                  latitude: float, longitude: float, user_id: UUID, creator_id: UUID,
                  n_room: int, n_bathroom: int, price_per_night: float,
-                 n_max_people: int, amenities: List[str], country: 'Country'):
+                 n_max_people: int, amenities: list, country: 'Country'):
 
-        self.place_id = uuid4()
+        super().__init__()
         self.name = name
         self.description = description
         self.address = address
@@ -22,19 +22,23 @@ class Place:
         self.latitude = latitude
         self.longitude = longitude
         self.user_id = user_id
-        self.creator_id = creator_id 
+        self.creator_id = creator_id
         self.n_room = n_room
         self.n_bathroom = n_bathroom
         self.price_per_night = price_per_night
         self.n_max_people = n_max_people
         self.amenities = amenities
-        self.reviews = Review.get_reviews_by_place_id(self.place_id)  # Fetch associated reviews
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        self.reviews = Review.get_reviews_by_place_id(self.id)
+        
+        city = City.get_city_by_name(city_name)
+        if not city:
+            raise ValueError(f"The city {city_name} is not found")
 
-        # Ajouter un dictionnaire représentant cette instance à la liste _places
+        if not any(city.name == city_name for city in country.cities):
+            raise ValueError(f"The city {city_name} is not found in the country {country.name}")
+
         self._places.append({
-            'place_id': self.place_id,
+            'place_id': self.id,
             'name': self.name,
             'description': self.description,
             'address': self.address,
@@ -52,24 +56,6 @@ class Place:
             'created_at': self.created_at,
             'updated_at': self.updated_at
         })
-
-        city = City.get_city_by_name(city_name)
-        if not city:
-            raise ValueError(f"The city {city_name} is not found")
-
-        if not any(city.name == city_name for city in country.cities):
-            raise ValueError(f"The city {city_name} is not found in the country {country.name}")
-
-    @classmethod
-    def get_places(cls):
-        return cls._places
-
-    @classmethod
-    def get_place_by_id(cls, place_id: UUID):
-        for place in cls._places:
-            if place['place_id'] == place_id:
-                return place
-        return None
 
     @property
     def name(self):
@@ -165,7 +151,6 @@ class Place:
     
     @staticmethod
     def get_creator_id(place_id: UUID) -> UUID:
-        # Implémentez cette méthode pour obtenir l'ID du créateur de la place
         pass
     
     @property
@@ -229,32 +214,7 @@ class Place:
         if not all(isinstance(review, Review) for review in value):
             raise TypeError("all reviews must be instances of Review")
         self._reviews = value
-
-    @property
-    def created_at(self):
-        return self._created_at
-
-    @created_at.setter
-    def created_at(self, value):
-        if not isinstance(value, datetime):
-            raise TypeError("created_at must be a datetime instance")
-        self._created_at = value
-
-    @property
-    def updated_at(self):
-        return self._updated_at
-
-    @updated_at.setter
-    def updated_at(self, value):
-        if not isinstance(value, datetime):
-            raise TypeError("updated_at must be a datetime instance")
-        self._updated_at = value
-
-    def update(self, user_id: UUID, **kwargs):
-        if user_id != self.creator_id:
-            raise PermissionError("Only the creator can update this place.")
-        
-        for key, value in kwargs.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-        self.updated_at = datetime.now()
+    
+    @staticmethod
+    def get_places_by_user_id(user_id: UUID):
+        return [place for place in Place._places if place['user_id'] == user_id]
