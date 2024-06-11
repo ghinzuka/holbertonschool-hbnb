@@ -2,7 +2,7 @@ from .base import BaseModel
 
 class Place(BaseModel):
     def __init__(self, name: str, description: str, address: str, city_name: str,
-                 latitude: float, longitude: float,n_room: int, n_bathroom: int,
+                 latitude: float, longitude: float, n_room: int, n_bathroom: int,
                  price_per_night: float, n_max_people: int, amenities: str, reviews: str):
         super().__init__()
         self.name = name
@@ -15,7 +15,9 @@ class Place(BaseModel):
         self.n_bathroom = n_bathroom
         self.price_per_night = price_per_night
         self.n_max_people = n_max_people
-
+        self.amenities = amenities
+        self.reviews = reviews
+        
     @property
     def name(self):
         return self._name
@@ -36,8 +38,8 @@ class Place(BaseModel):
             raise TypeError("description must be a string")
         if not value:
             raise ValueError("description must not be empty")
-        if len(value) > 400:
-            raise ValueError("description must be under 400 characters")
+        if len(value) > 1000:
+            raise ValueError("description must be under 1000 characters")
         self._description = value
 
     @property
@@ -66,7 +68,7 @@ class Place(BaseModel):
 
     @latitude.setter
     def latitude(self, value):
-        if not isinstance(value, float) or value is None:
+        if not isinstance(value, float):
             raise TypeError("latitude must be a non-empty float")
         if value < -90 or value > 90:
             raise ValueError("latitude must be between -90 and 90 degrees")
@@ -78,7 +80,7 @@ class Place(BaseModel):
 
     @longitude.setter
     def longitude(self, value):
-        if not isinstance(value, float) or value is None:
+        if not isinstance(value, float):
             raise TypeError("longitude must be a non-empty float")
         if value < -180 or value > 180:
             raise ValueError("longitude must be between -180 and 180 degrees")
@@ -90,8 +92,10 @@ class Place(BaseModel):
 
     @n_room.setter
     def n_room(self, value):
-        if not isinstance(value, int) or value is None:
+        if not isinstance(value, int):
             raise TypeError("n_room must be a non-empty integer")
+        if value < 0:
+            raise ValueError("number of rooms need to be greater than 0")
         self._n_room = value
 
     @property
@@ -100,8 +104,10 @@ class Place(BaseModel):
 
     @n_bathroom.setter
     def n_bathroom(self, value):
-        if not isinstance(value, int) or value is None:
+        if not isinstance(value, int):
             raise TypeError("n_bathroom must be a non-empty integer")
+        if value < 0:
+            raise ValueError("number of bathrooms need to be greater than 0")
         self._n_bathroom = value
 
     @property
@@ -110,8 +116,10 @@ class Place(BaseModel):
 
     @price_per_night.setter
     def price_per_night(self, value):
-        if not isinstance(value, float) or value is None:
+        if not isinstance(value, float):
             raise TypeError("price_per_night must be a non-empty float")
+        if value < 0:
+            raise ValueError("price need to be greater than 0")
         self._price_per_night = value
 
     @property
@@ -120,8 +128,10 @@ class Place(BaseModel):
 
     @n_max_people.setter
     def n_max_people(self, value):
-        if not isinstance(value, int) or value is None:
+        if not isinstance(value, int):
             raise TypeError("n_max_people must be a non-empty integer")
+        if value < 0:
+            raise ValueError("max people need to be greater than 0")
         self._n_max_people = value
 
     @property
@@ -132,7 +142,7 @@ class Place(BaseModel):
     def reviews(self, value):
         if not isinstance(value, str) or not value:
             raise TypeError("reviews must be a non-empty string")
-        self._name = value
+        self._reviews = value
     
     @property
     def amenities(self):
@@ -142,4 +152,4 @@ class Place(BaseModel):
     def amenities(self, value):
         if not isinstance(value, str) or not value:
             raise TypeError("amenities must be a non-empty string")
-        self._name = value
+        self._amenities = value
