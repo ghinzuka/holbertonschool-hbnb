@@ -26,3 +26,17 @@ class Country(BaseModel):
         if not isinstance(value, City):
             raise TypeError("city must be a City instance")
         self.__city = value
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "city": self.city.to_dict(), 
+           
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            name=data["name"],
+            city=City.from_dict(data["city"]) 
+        )
