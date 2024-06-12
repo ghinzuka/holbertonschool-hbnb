@@ -16,13 +16,19 @@ class City(BaseModel):
         self._name = value
 
     def to_dict(self):
-        return {
-            "name": self.name,
-            "id": self.id 
+        city_dict = {
+            "name": self.name
         }
+        city_dict.update(super().to_dict())  # Ajouter les attributs de BaseModel
+        return city_dict
 
     @classmethod
     def from_dict(cls, data):
-        return cls(
+        instance = cls(
             name=data["name"]
-            )
+        )
+        base_instance = BaseModel.from_dict(data)
+        instance.id = base_instance.id
+        instance.created_at = base_instance.created_at
+        instance.updated_at = base_instance.updated_at
+        return instance

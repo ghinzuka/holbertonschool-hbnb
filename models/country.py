@@ -28,15 +28,21 @@ class Country(BaseModel):
         self.__city = value
 
     def to_dict(self):
-        return {
+        country_dict = {
             "name": self.name,
-            "city": self.city.to_dict(), 
-           
+            "city": self.city.to_dict()
         }
+        country_dict.update(super().to_dict())  # Ajouter les attributs de BaseModel
+        return country_dict
 
     @classmethod
     def from_dict(cls, data):
-        return cls(
+        instance = cls(
             name=data["name"],
             city=City.from_dict(data["city"]) 
         )
+        base_instance = BaseModel.from_dict(data)
+        instance.id = base_instance.id
+        instance.created_at = base_instance.created_at
+        instance.updated_at = base_instance.updated_at
+        return instance
