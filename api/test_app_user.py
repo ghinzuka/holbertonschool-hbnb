@@ -1,6 +1,6 @@
 import unittest
 import json
-from api.app import app, data_manager
+from api.app_user import app, data_manager
 from models.user import User
 
 class TestUserAPI(unittest.TestCase):
