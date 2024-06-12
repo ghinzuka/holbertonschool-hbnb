@@ -1,8 +1,8 @@
 {
-    "711e2c0c-86c1-4205-b66b-8d01fa54831b_User": {
-        "id": "711e2c0c-86c1-4205-b66b-8d01fa54831b",
-        "created_at": "2024-06-12T13:42:44.768259",
-        "updated_at": "2024-06-12T13:42:44.768264",
+    "f8605603-2a2c-41fa-b564-fa0a74a4ca20_User": {
+        "id": "f8605603-2a2c-41fa-b564-fa0a74a4ca20",
+        "created_at": "2024-06-12T13:52:52.837829",
+        "updated_at": "2024-06-12T13:52:52.837835",
         "email": "updateduser@example.com",
         "password": "newpassword123",
         "first_name": "Updated",
