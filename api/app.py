@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 from flask_restx import Api, Resource, fields
-from datetime import datetime
 from models.user import User
 from persistence.datamanager import DataManager
 
@@ -40,7 +39,7 @@ class UserList(Resource):
         if not validate_email(data.get('email')):
             return {'message': 'Invalid email format'}, 400
 
-        if any(u.email == data['email'] for u in [data_manager.read(user_id, User) for user_id in data_manager.data]):
+        if any(u.email == data['email'] for u in [data_manager.read(user_id, User) for user_id in data_manager.data if data_manager.read(user_id, User) is not None]):
             return {'message': 'Email already exists'}, 409
 
         new_user = User(
@@ -50,11 +49,9 @@ class UserList(Resource):
             last_name=data['last_name']
         )
         data_manager.create(new_user)
-        user_dict = new_user.to_dict()
-        user_dict['id'] = new_user.id  # Ajouter l'ID à l'objet JSON
-        return user_dict, 201
+        return new_user.to_dict(), 201
 
-@ns.route('/<string:user_id>')  # Utilisation de string car les IDs sont des UUIDs
+@ns.route('/<string:user_id>')  # Use string type for user_id
 @ns.response(404, 'User not found')
 class SingleUser(Resource):
     @ns.doc('get_user')
@@ -88,7 +85,7 @@ class SingleUser(Resource):
         if not validate_email(data.get('email')):
             return {'message': 'Invalid email format'}, 400
 
-        if any(u.email == data['email'] and u.id != user_id for u in [data_manager.read(uid, User) for uid in data_manager.data]):
+        if any(u and u.email == data['email'] and u.id != user_id for u in [data_manager.read(uid, User) for uid in data_manager.data]):
             return {'message': 'Email already exists'}, 409
 
         user.email = data['email']

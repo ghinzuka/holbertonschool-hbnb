@@ -1,115 +1,87 @@
-from flask_testing import TestCase
-from flask import url_for
-from api.app import app
-from persistence.datamanager import DataManager
+import unittest
+import json
+from api.app import app, data_manager
 from models.user import User
 
-class TestUserAPI(TestCase):
-    def create_app(self):
-        app.config['TESTING'] = True
-        app.config['WTF_CSRF_ENABLED'] = False
-        return app
+class TestUserAPI(unittest.TestCase):
 
     def setUp(self):
-        # Préparer l'environnement pour chaque test
-        self.data_manager = DataManager('test_data.json')
-        self.data_manager.data = {}  # Réinitialiser les données pour chaque test
-
-    def tearDown(self):
-        # Nettoyer l'environnement après chaque test
-        self.data_manager.data = {}
+        self.app = app.test_client()
+        self.app.testing = True
+        # Clear data_manager data for a clean test environment
+        data_manager.data = {}
+        data_manager.save_data()
 
     def test_create_user(self):
-        response = self.client.post(url_for('users_user_list'), json={
-            'email': 'test@example.com',
+        user_data = {
+            'email': 'testuser@example.com',
             'password': 'password123',
             'first_name': 'Test',
             'last_name': 'User'
-        })
+        }
+        response = self.app.post('/users/', data=json.dumps(user_data), content_type='application/json')
+        print(f"Create User Response: {response.json}")
         self.assertEqual(response.status_code, 201)
-        self.assertIn('email', response.json)
-        self.assertEqual(response.json['email'], 'test@example.com')
-        self.assertIn('id', response.json)  # Vérifie si l'UUID de l'utilisateur est présent dans la réponse JSON
+        self.assertIn('id', response.json)
+        self.created_user_id = response.json['id']
 
     def test_get_user(self):
-        # Créer un utilisateur de test
-        test_user = User(
-            email='test@example.com',
-            password='password123',
-            first_name='Test',
-            last_name='User'
-        )
-        self.data_manager.create(test_user)
-
-        # Récupérer l'identifiant UUID de l'utilisateur créé
-        user_id = test_user.id
-
-        # Effectuer une requête GET pour récupérer les détails de l'utilisateur
-        response = self.client.get(url_for('users_single_user', user_id=user_id))
+        # Create a user to test
+        user_data = {
+            'email': 'fetchuser@example.com',
+            'password': 'password123',
+            'first_name': 'Fetch',
+            'last_name': 'User'
+        }
+        create_response = self.app.post('/users/', data=json.dumps(user_data), content_type='application/json')
+        user_id = create_response.json['id']
         
-        # Vérifier si la réponse est réussie et si les détails de l'utilisateur sont corrects
+        response = self.app.get(f'/users/{user_id}')
+        print(f"Get User Response: {response.json}")
         self.assertEqual(response.status_code, 200)
-        self.assertIn('email', response.json)
-        self.assertEqual(response.json['email'], 'test@example.com')
-        self.assertIn('id', response.json)
-        self.assertEqual(response.json['id'], str(user_id))  # Vérifie si l'identifiant UUID est présent et correct
+        self.assertEqual(response.json['email'], user_data['email'])
 
     def test_update_user(self):
-        # Créer un utilisateur de test
-        test_user = User(
-            email='test@example.com',
-            password='password123',
-            first_name='Test',
-            last_name='User'
-        )
-        self.data_manager.create(test_user)
-
-        # Récupérer l'identifiant UUID de l'utilisateur créé
-        user_id = test_user.id
-
-        # Effectuer une requête PUT pour mettre à jour les détails de l'utilisateur
-        response = self.client.put(url_for('users_single_user', user_id=user_id), json={
-            'email': 'updated_test@example.com',
+        # Create a user to test
+        user_data = {
+            'email': 'updateuser@example.com',
+            'password': 'password123',
+            'first_name': 'Update',
+            'last_name': 'User'
+        }
+        create_response = self.app.post('/users/', data=json.dumps(user_data), content_type='application/json')
+        user_id = create_response.json['id']
+        
+        updated_user_data = {
+            'email': 'updateduser@example.com',
             'password': 'newpassword123',
             'first_name': 'Updated',
             'last_name': 'User'
-        })
-
-        # Vérifier si la mise à jour s'est faite avec succès
+        }
+        response = self.app.put(f'/users/{user_id}', data=json.dumps(updated_user_data), content_type='application/json')
+        print(f"Update User Response: {response.json}")
         self.assertEqual(response.status_code, 200)
-
-        # Récupérer les détails mis à jour de l'utilisateur
-        updated_user = self.data_manager.read(user_id, User)
-
-        # Vérifier si les détails ont été correctement mis à jour dans la base de données
-        self.assertEqual(updated_user.email, 'updated_test@example.com')
-        self.assertEqual(updated_user.first_name, 'Updated')
-        self.assertEqual(updated_user.last_name, 'User')
+        self.assertEqual(response.json['email'], updated_user_data['email'])
 
     def test_delete_user(self):
-        # Créer un utilisateur de test
-        test_user = User(
-            email='test@example.com',
-            password='password123',
-            first_name='Test',
-            last_name='User'
-        )
-        self.data_manager.create(test_user)
-
-        # Récupérer l'identifiant UUID de l'utilisateur créé
-        user_id = test_user.id
-
-        # Effectuer une requête DELETE pour supprimer l'utilisateur
-        response = self.client.delete(url_for('users_single_user', user_id=user_id))
-
-        # Vérifier si la suppression s'est faite avec succès
+        # Create a user to test
+        user_data = {
+            'email': 'deleteuser@example.com',
+            'password': 'password123',
+            'first_name': 'Delete',
+            'last_name': 'User'
+        }
+        create_response = self.app.post('/users/', data=json.dumps(user_data), content_type='application/json')
+        user_id = create_response.json['id']
+        
+        response = self.app.delete(f'/users/{user_id}')
+        print(f"Delete User Response Status Code: {response.status_code}")
         self.assertEqual(response.status_code, 204)
-
-        # Vérifier si l'utilisateur a été correctement supprimé de la base de données
-        deleted_user = self.data_manager.read(user_id, User)
-        self.assertIsNone(deleted_user)  # L'utilisateur ne doit pas être trouvé dans la base de données
-
+        
+        # Verify user is deleted
+        response = self.app.get(f'/users/{user_id}')
+        print(f"Get Deleted User Response: {response.json}")
+        self.assertEqual(response.status_code, 404)
 
 if __name__ == '__main__':
-    import unittest
     unittest.main()

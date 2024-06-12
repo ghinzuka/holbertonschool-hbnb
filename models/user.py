@@ -54,19 +54,25 @@ class User(BaseModel):
         self._last_name = value
     
     def to_dict(self):
-        return {
+        user_dict = super().to_dict()  # Inclure les champs de BaseModel
+        user_dict.update({
             "email": self.email,
             "password": self.password,
             "first_name": self.first_name,
-            "last_name": self.last_name,
-            "id": self.id         
-        }
+            "last_name": self.last_name
+        })
+        return user_dict
 
     @classmethod
     def from_dict(cls, data):
-        return cls(
+        instance = cls(
             email=data["email"],
             password=data["password"],
             first_name=data["first_name"],
-            last_name=data["last_name"]    
+            last_name=data["last_name"]
         )
+        base_instance = BaseModel.from_dict(data)
+        instance.id = base_instance.id
+        instance.created_at = base_instance.created_at
+        instance.updated_at = base_instance.updated_at
+        return instance
