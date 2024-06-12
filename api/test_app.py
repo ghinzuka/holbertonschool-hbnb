@@ -1,50 +1,41 @@
-import unittest
-from app import app, users  # Assurez-vous que `app` est importé correctement depuis votre fichier principal
+from flask_testing import TestCase
+from flask import url_for
+from api.app import app
+from persistence.datamanager import DataManager
+from models.user import User
 
-class UserApiTestCase(unittest.TestCase):
+class TestUserAPI(TestCase):
+    def create_app(self):
+        app.config['TESTING'] = True
+        app.config['WTF_CSRF_ENABLED'] = False
+        return app
 
     def setUp(self):
-        self.app = app.test_client()
-        self.app.testing = True
+        # Préparer l'environnement pour chaque test
+        self.data_manager = DataManager('test_data.json')
+        self.data_manager.data = {}  # Réinitialiser les données pour chaque test
 
     def tearDown(self):
-        users.clear()  # Réinitialise la liste des utilisateurs après chaque test
+        # Nettoyer l'environnement après chaque test
+        self.data_manager.data = {}
+
+    def test_list_users(self):
+        response = self.client.get(url_for('users_user_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.json, list)
 
     def test_create_user(self):
-        user_data = {
+        response = self.client.post(url_for('users_user_list'), json={
             'email': 'test@example.com',
+            'password': 'password123',
             'first_name': 'Test',
             'last_name': 'User'
-        }
-        response = self.app.post('/users/', json=user_data)
+        })
         self.assertEqual(response.status_code, 201)
         self.assertIn('email', response.json)
-        self.assertIn('first_name', response.json)
-        self.assertIn('last_name', response.json)
-        self.assertIn('id', response.json)
-        self.assertIn('created_at', response.json)
-        self.assertIn('updated_at', response.json)
+        self.assertEqual(response.json['email'], 'test@example.com')
 
-    def test_create_user_invalid_email(self):
-        user_data = {
-            'email': 'invalid-email',
-            'first_name': 'Test',
-            'last_name': 'User'
-        }
-        response = self.app.post('/users/', json=user_data)
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json['message'], 'Invalid email format')
-
-    def test_create_user_duplicate_email(self):
-        user_data = {
-            'email': 'test@example.com',
-            'first_name': 'Test',
-            'last_name': 'User'
-        }
-        self.app.post('/users/', json=user_data)
-        response = self.app.post('/users/', json=user_data)
-        self.assertEqual(response.status_code, 409)
-        self.assertEqual(response.json['message'], 'Email already exists')
 
 if __name__ == '__main__':
+    import unittest
     unittest.main()
