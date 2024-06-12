@@ -1,1 +1,9 @@
-{}
+{
+    "06a1725a-528f-42d6-81f7-253e9ff7d68e_User": {
+        "email": "test@example.com",
+        "password": "password123",
+        "first_name": "Test",
+        "last_name": "User",
+        "id": "06a1725a-528f-42d6-81f7-253e9ff7d68e"
+    }
+}

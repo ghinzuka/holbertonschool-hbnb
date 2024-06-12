@@ -1,1 +1,9 @@
-{}
+{
+    "129147ce-a461-4697-aee4-c1e111affae5_User": {
+        "email": "test@example.com",
+        "password": "password123",
+        "first_name": "Test",
+        "last_name": "User",
+        "id": "129147ce-a461-4697-aee4-c1e111affae5"
+    }
+}

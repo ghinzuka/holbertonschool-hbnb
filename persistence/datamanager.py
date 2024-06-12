@@ -21,6 +21,9 @@ class DataManager:
             json.dump(serialized_data, file, indent=4)
 
     def create(self, entity):
+        if not hasattr(entity, 'id'):
+            raise AttributeError("Entity must have an 'id' attribute.")
+        
         key = f"{entity.id}_{type(entity).__name__}"  # Utiliser une chaîne pour représenter la clé
         self.data[key] = entity.to_dict()
         self.save_data()

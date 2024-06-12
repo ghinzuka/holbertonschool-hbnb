@@ -50,11 +50,13 @@ class UserList(Resource):
             last_name=data['last_name']
         )
         data_manager.create(new_user)
-        return new_user.to_dict(), 201
+        user_dict = new_user.to_dict()
+        user_dict['id'] = new_user.id  # Ajouter l'ID à l'objet JSON
+        return user_dict, 201
 
 @ns.route('/<string:user_id>')  # Utilisation de string car les IDs sont des UUIDs
 @ns.response(404, 'User not found')
-class User(Resource):
+class SingleUser(Resource):
     @ns.doc('get_user')
     def get(self, user_id):
         '''Fetch a user given its identifier'''
