@@ -1,5 +1,8 @@
 project/
 │
+├── Dockerfile
+├── requirements.txt
+│
 ├── api/
 │   ├── __init__.py
 │   ├── app_user.py
