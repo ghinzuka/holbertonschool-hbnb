@@ -1,10 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Blueprint, request, jsonify
 from flask_restx import Api, Resource, fields
 from models.amenity import Amenities
 from persistence.datamanager import DataManager
 
-app = Flask(__name__)
-api = Api(app, version='1.0', title='Amenity API', description='A simple Amenity API')
+# Créez un Blueprint pour l'API Amenity
+amenity_bp = Blueprint('amenity_bp', __name__)
+api = Api(amenity_bp, version='1.0', title='Amenity API', description='A simple Amenity API')
 
 ns = api.namespace('amenities', description='Amenity operations')
 
@@ -79,6 +80,3 @@ class SingleAmenity(Resource):
         amenity.name = data['name']
         amenity_data_manager.update(amenity)
         return amenity.to_dict()
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5002)

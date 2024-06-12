@@ -7,6 +7,7 @@ project/
 │   ├── __init__.py
 │   ├── app_user.py
 │   ├── app_amenity.py
+│   ├── app_combined.py   # Nouveau fichier combinant les deux applications
 │   └── test_app_amenity.py
 │   └── test_app_user.py
 │
@@ -25,7 +26,7 @@ project/
 │   ├── datamanager.py
 │   └── ipersistence.py
 │
-└── tests/
+└── test/
     ├── test_amenity.py
     ├── test_base.py
     ├── test_city.py
