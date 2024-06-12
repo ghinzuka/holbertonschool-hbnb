@@ -19,5 +19,5 @@ EXPOSE 5001
 EXPOSE 5002
 
 # Démarrer les applications Flask avec Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5001", "api.app_user:app"]
+
 CMD ["gunicorn", "--bind", "0.0.0.0:5002", "api.app_amenity:app"]
