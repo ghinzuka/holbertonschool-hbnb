@@ -1,45 +1,41 @@
 import unittest
-import sys
 import os
+import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from models.amenity import Amenities
 from persistence.datamanager import DataManager
+from models.amenity import Amenities
 
 class TestAmenities(unittest.TestCase):
-    def test_amenities_init(self):
-        # Création d'une instance d'Amenities
-        amenities = Amenities(name="WiFi")
+    def setUp(self):
+        # Créer une instance de DataManager avec un chemin de fichier spécifique pour le stockage des données JSON
+        self.file_path = "test_amenities.json"  # Chemin de fichier pour stocker les données JSON
+        self.datamanager = DataManager(self.file_path)
 
-        # Vérification des attributs
-        self.assertEqual(amenities.name, "WiFi")
-        self.assertIsNotNone(amenities.id)  # Vérification que l'ID est défini
+    def tearDown(self):
+        # Supprimer le fichier JSON après chaque test
+        if os.path.exists(self.file_path):
+            os.remove(self.file_path)
 
-    def test_amenities_to_dict(self):
-        # Création d'une instance d'Amenities
-        amenities = Amenities(name="Pool")
+    def test_amenities_crud(self):
+        # Création d'une commodité
+        amenities = Amenities(name='Swimming Pool')
+        self.datamanager.create(amenities)
 
-        # Conversion en dictionnaire
-        amenities_dict = amenities.to_dict()
+        # Récupération de la commodité
+        retrieved_amenities = self.datamanager.read(amenities.id, Amenities)
+        self.assertEqual(retrieved_amenities.name, 'Swimming Pool')
+        self.assertIsNotNone(retrieved_amenities.id)  # Vérifier que l'ID a été correctement défini
 
-        # Vérification des clés du dictionnaire
-        self.assertIn("name", amenities_dict)
-        self.assertIn("id", amenities_dict)
+        # Mise à jour de la commodité
+        amenities.name = 'Gym'
+        self.datamanager.update(amenities)
+        updated_amenities = self.datamanager.read(amenities.id, Amenities)
+        self.assertEqual(updated_amenities.name, 'Gym')
 
-        # Vérification des valeurs du dictionnaire
-        self.assertEqual(amenities_dict["name"], "Pool")
-        self.assertIsNotNone(amenities_dict["id"])  # Vérification que l'ID est inclus dans le dictionnaire
-
-    def test_amenities_from_dict(self):
-        # Création d'un dictionnaire représentant Amenities
-        amenities_data = {
-            "name": "Gym"
-        }
-
-        # Création d'une instance d'Amenities à partir du dictionnaire
-        amenities = Amenities.from_dict(amenities_data)
-
-        # Vérification des attributs de l'instance
-        self.assertEqual(amenities.name, "Gym")
+        # Suppression de la commodité
+        self.datamanager.delete(amenities.id, Amenities)
+        deleted_amenities = self.datamanager.read(amenities.id, Amenities)
+        self.assertIsNone(deleted_amenities)
 
 if __name__ == '__main__':
     unittest.main()
