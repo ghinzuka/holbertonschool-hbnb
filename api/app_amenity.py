@@ -3,7 +3,6 @@ from flask_restx import Api, Resource, fields
 from models.amenity import Amenities
 from persistence.datamanager import DataManager
 
-# Créez un Blueprint pour l'API Amenity
 amenity_bp = Blueprint('amenity_bp', __name__)
 api = Api(amenity_bp, version='1.0', title='Amenity API', description='A simple Amenity API')
 
@@ -13,7 +12,6 @@ amenity_model = api.model('Amenity', {
     'name': fields.String(required=True, description='The amenity name')
 })
 
-# Initialize the DataManager
 amenity_data_manager = DataManager('amenity_data.json')
 
 @ns.route('/')

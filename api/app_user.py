@@ -3,7 +3,6 @@ from flask_restx import Api, Resource, fields
 from models.user import User
 from persistence.datamanager import DataManager
 
-# Créez un Blueprint pour l'API utilisateur
 user_bp = Blueprint('user', __name__)
 api = Api(user_bp, version='1.0', title='User API', description='A simple User API')
 
@@ -16,7 +15,6 @@ user_model = api.model('User', {
     'last_name': fields.String(required=True, description='The user last name')
 })
 
-# Initialize the DataManager
 data_manager = DataManager('data.json')
 
 def validate_email(email):
