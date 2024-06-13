@@ -8,7 +8,7 @@ WORKDIR /app
 COPY api/ ./api
 COPY models/ ./models
 COPY persistence/ ./persistence
-COPY test/ ./test
+COPY tests/ ./tests
 COPY requirements.txt .
 
 # Installer les dépendances des applications Flask
