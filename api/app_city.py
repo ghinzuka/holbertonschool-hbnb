@@ -1,10 +1,10 @@
-from flask import Flask, request
+from flask import Blueprint, request
 from flask_restx import Api, Resource, fields, abort
 from models.city import City
 from persistence.city_manager import CityManager
 
-app = Flask(__name__)
-api = Api(app, version='1.0', title='City API', description='API for managing cities')
+city_bp = Blueprint('city', __name__)
+api = Api(city_bp, version='1.0', title='City API', description='API for managing cities')
 
 # Initialize CityManager with the JSON file path
 city_manager = CityManager('cities.json')
@@ -95,5 +95,5 @@ class DeleteCity(Resource):
         else:
             abort(404, message='City not found')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# Ce fichier est un Blueprint indépendant. Nous n'exécutons pas l'application Flask ici.
+

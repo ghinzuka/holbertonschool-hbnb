@@ -1,17 +1,17 @@
-from flask import Flask, request, jsonify
+from flask import Blueprint, jsonify, request
 from flask_restx import Api, Resource, fields
-from models.country import Country  # Assurez-vous que Country est correctement importé depuis models.country
+from models.country import Country
 from persistence.country_manager import CountryManager
 
-app = Flask(__name__)
-api = Api(app, version='1.0', title='Country API', description='API for managing countries')
+country_bp = Blueprint('country', __name__)
+api = Api(country_bp, version='1.0', title='Country API', description='API for managing countries')
 
 country_model = api.model('Country', {
     'code': fields.String(required=True, description='The country code (ISO 3166-1 alpha-2)'),
     'name': fields.String(required=True, description='The country name')
 })
 
-country_manager = CountryManager('countries.json')  # Assurez-vous que 'countries.json' existe et contient des données valides
+country_manager = CountryManager('countries.json')
 
 @api.route('/countries')
 class CountryList(Resource):
@@ -82,5 +82,3 @@ class SingleCountry(Resource):
         except (TypeError, ValueError) as e:
             return {'message': str(e)}, 400
 
-if __name__ == '__main__':
-    app.run(debug=True)
