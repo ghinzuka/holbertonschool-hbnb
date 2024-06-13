@@ -29,15 +29,21 @@ class Review(BaseModel):
         self._rating = value
 
     def to_dict(self):
-        return {
+        review_dict = super().to_dict()  # Inclure les champs de BaseModel
+        review_dict.update({
             "text": self.text,
-            "rating": self.rating,
-            "id": self.id  
-        }
+            "rating": self.rating
+        })
+        return review_dict
 
     @classmethod
     def from_dict(cls, data):
-        return cls(
+        instance = cls(
             text=data["text"],
             rating=data["rating"]
         )
+        base_instance = BaseModel.from_dict(data)
+        instance.id = base_instance.id
+        instance.created_at = base_instance.created_at
+        instance.updated_at = base_instance.updated_at
+        return instance

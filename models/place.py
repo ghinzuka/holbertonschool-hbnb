@@ -155,7 +155,8 @@ class Place(BaseModel):
         self._amenities = value
 
     def to_dict(self):
-        return {
+        place_dict = super().to_dict()  # Inclure les champs de BaseModel
+        place_dict.update({
             "name": self.name,
             "description": self.description,
             "address": self.address,
@@ -167,13 +168,13 @@ class Place(BaseModel):
             "price_per_night": self.price_per_night,
             "n_max_people": self.n_max_people,
             "amenities": self.amenities,
-            "reviews": self.reviews,
-            "id": self.id 
-        }
+            "reviews": self.reviews
+        })
+        return place_dict
 
     @classmethod
     def from_dict(cls, data):
-        return cls(
+        instance = cls(
             name=data["name"],
             description=data["description"],
             address=data["address"],
@@ -187,3 +188,8 @@ class Place(BaseModel):
             amenities=data["amenities"],
             reviews=data["reviews"]
         )
+        base_instance = BaseModel.from_dict(data)
+        instance.id = base_instance.id
+        instance.created_at = base_instance.created_at
+        instance.updated_at = base_instance.updated_at
+        return instance
