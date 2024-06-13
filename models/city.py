@@ -40,7 +40,7 @@ class City(BaseModel):
             name=data["name"],
             country_code=data["country_code"]
         )
-        base_instance = super().from_dict(data)
+        base_instance = BaseModel.from_dict(data)
         instance.id = base_instance.id
         instance.created_at = base_instance.created_at
         instance.updated_at = base_instance.updated_at
