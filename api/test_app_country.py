@@ -1,8 +1,6 @@
 import os
 import unittest
 import json
-from flask import Flask
-from flask_restx import Api
 from api.app_country import app, country_manager
 
 # Chemin absolu vers le fichier JSON de test

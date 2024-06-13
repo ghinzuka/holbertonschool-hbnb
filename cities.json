@@ -1,0 +1,23 @@
+{
+    "f697f7e3-a3f0-404b-b49c-547459ebb1f8_City": {
+        "name": "Test City",
+        "country_code": "US",
+        "id": "f697f7e3-a3f0-404b-b49c-547459ebb1f8",
+        "created_at": "2024-06-13T19:54:26.099325",
+        "updated_at": "2024-06-13T19:54:26.099330"
+    },
+    "5ee399fb-2307-4940-8385-17272b0e5881_City": {
+        "name": "Test City",
+        "country_code": "US",
+        "id": "5ee399fb-2307-4940-8385-17272b0e5881",
+        "created_at": "2024-06-13T19:54:26.106601",
+        "updated_at": "2024-06-13T19:54:26.106608"
+    },
+    "794e316e-75a9-4b9a-a8d8-5917220bdf0b_City": {
+        "name": "Updated City Name",
+        "country_code": "FR",
+        "id": "794e316e-75a9-4b9a-a8d8-5917220bdf0b",
+        "created_at": "2024-06-13T19:54:26.110834",
+        "updated_at": "2024-06-13T19:54:26.110840"
+    }
+}
