@@ -8,16 +8,14 @@ WORKDIR /app
 COPY api/ ./api
 COPY models/ ./models
 COPY persistence/ ./persistence
-COPY tests/ ./tests
+COPY test/ ./test
 COPY requirements.txt .
 
 # Installer les dépendances des applications Flask
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Exposer les ports pour les applications Flask
-EXPOSE 5001
-EXPOSE 5002
+# Exposer le port pour l'application Flask
+EXPOSE 5000
 
-# Démarrer les applications Flask avec Gunicorn
-
-CMD ["gunicorn", "--bind", "0.0.0.0:5002", "api.app_amenity:app"]
+# Démarrer l'application Flask combinée avec Gunicorn
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "api.app_combined:app"]

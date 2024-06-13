@@ -1,10 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Blueprint, request, jsonify
 from flask_restx import Api, Resource, fields
 from models.user import User
 from persistence.datamanager import DataManager
 
-app = Flask(__name__)
-api = Api(app, version='1.0', title='User API', description='A simple User API')
+# Créez un Blueprint pour l'API utilisateur
+user_bp = Blueprint('user', __name__)
+api = Api(user_bp, version='1.0', title='User API', description='A simple User API')
 
 ns = api.namespace('users', description='User operations')
 
@@ -94,6 +95,3 @@ class SingleUser(Resource):
         user.last_name = data['last_name']
         data_manager.update(user)
         return user.to_dict()
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5001)
