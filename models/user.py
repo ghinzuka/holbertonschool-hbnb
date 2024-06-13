@@ -54,7 +54,7 @@ class User(BaseModel):
         self._last_name = value
     
     def to_dict(self):
-        user_dict = super().to_dict()  # Inclure les champs de BaseModel
+        user_dict = super().to_dict() 
         user_dict.update({
             "email": self.email,
             "password": self.password,
