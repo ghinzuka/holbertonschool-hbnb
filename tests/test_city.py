@@ -4,23 +4,24 @@ import json
 from models.city import City
 from persistence.datamanager import DataManager
 
+
 class TestCityCRUD(unittest.TestCase):
 
     def setUp(self):
         self.db_path = 'tests/test_db.json'
         self.countries_temp_path = 'tests/test_countries.json'
-        
+
         # Copy the original countries.json content to a test-specific file
         with open('persistence/countries.json', 'r') as src_file:
             countries_data = json.load(src_file)
-        
+
         with open(self.countries_temp_path, 'w') as file:
             json.dump(countries_data, file)
-        
+
         # Ensure the database file is created
         with open(self.db_path, 'w') as file:
             json.dump({}, file)
-        
+
         self.data_manager = DataManager(self.db_path, self.countries_temp_path)
 
     def tearDown(self):
@@ -51,6 +52,7 @@ class TestCityCRUD(unittest.TestCase):
         self.data_manager.create_city(city)
         self.data_manager.delete_city(city.id)
         self.assertIsNone(self.data_manager.read_city(city.id))
+
 
 if __name__ == '__main__':
     unittest.main()
