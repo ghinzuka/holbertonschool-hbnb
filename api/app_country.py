@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_restx import Api, Resource, fields
-from models.country import Country
-from persistence.datamanager import DataManager
+from models.country import Country  # Assurez-vous que Country est correctement importé depuis models.country
+from persistence.country_manager import CountryManager
 
 app = Flask(__name__)
 api = Api(app, version='1.0', title='Country API', description='API for managing countries')
@@ -11,15 +11,18 @@ country_model = api.model('Country', {
     'name': fields.String(required=True, description='The country name')
 })
 
-country_data_manager = DataManager('country_data.json')
+country_manager = CountryManager('countries.json')  # Assurez-vous que 'countries.json' existe et contient des données valides
 
 @api.route('/countries')
 class CountryList(Resource):
     @api.doc('list_countries')
     def get(self):
         '''List all countries'''
-        countries = [country_data_manager.read_country(country['code']) for country in country_data_manager.countries]
-        countries = [country.to_dict() for country in countries if country]
+        countries = []
+        for country_code in country_manager.available_countries:
+            country = country_manager.read_country(country_code)
+            if country:
+                countries.append(country.to_dict())
         return jsonify(countries)
 
     @api.doc('create_country')
@@ -32,7 +35,7 @@ class CountryList(Resource):
         
         try:
             new_country = Country(code=data['code'], name=data['name'])
-            country_data_manager.create_country(new_country)
+            country_manager.create_country(new_country)
             return new_country.to_dict(), 201
         except (TypeError, ValueError) as e:
             return {'message': str(e)}, 400
@@ -43,7 +46,7 @@ class SingleCountry(Resource):
     @api.doc('get_country')
     def get(self, country_code):
         '''Fetch a country given its code'''
-        country = country_data_manager.read_country(country_code)
+        country = country_manager.read_country(country_code)
         if country:
             return country.to_dict()
         return {'message': 'Country not found'}, 404
@@ -52,9 +55,8 @@ class SingleCountry(Resource):
     @api.response(204, 'Country deleted')
     def delete(self, country_code):
         '''Delete a country given its code'''
-        country = country_data_manager.read_country(country_code)
-        if country:
-            country_data_manager.delete_country(country_code)
+        country_deleted = country_manager.delete_country(country_code)
+        if country_deleted:
             return '', 204
         return {'message': 'Country not found'}, 404
 
@@ -63,7 +65,7 @@ class SingleCountry(Resource):
     @api.doc('update_country')
     def put(self, country_code):
         '''Update a country given its code'''
-        country = country_data_manager.read_country(country_code)
+        country = country_manager.read_country(country_code)
         if not country:
             return {'message': 'Country not found'}, 404
 
@@ -75,7 +77,7 @@ class SingleCountry(Resource):
             country.name = data['name']
         
         try:
-            country_data_manager.update_country(country)
+            country_manager.update_country(country)
             return country.to_dict()
         except (TypeError, ValueError) as e:
             return {'message': str(e)}, 400

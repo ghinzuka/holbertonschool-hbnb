@@ -6,6 +6,8 @@ project/
 |---city_data.json
 |---amenity_data.json
 |---structure.txt
+|---test_countries.json
+|---countries.json
 │
 ├── api/
 │   ├── __init__.py
