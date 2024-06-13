@@ -3,25 +3,48 @@ from models.city import City
 from models.country import Country
 
 class DataManager:
-    def __init__(self, file_path, countries_file_path=None):
+    def __init__(self, file_path=None, city_file_path=None, countries_file_path=None):
         self.file_path = file_path
+        self.city_file_path = city_file_path
         self.countries_file_path = countries_file_path
         self.data = {}
+        self.cities = {}
         self.countries = []
         self.load_data()
-        self.load_countries()  # Nouvelle méthode pour charger les pays
+        self.load_cities_data()
+        self.load_countries()
 
     def load_data(self):
-        try:
-            with open(self.file_path, 'r') as file:
-                content = file.read().strip()
-                if content:
-                    self.data = json.loads(content)
-                else:
-                    self.data = {}
-        except FileNotFoundError:
+        if self.file_path:
+            try:
+                with open(self.file_path, 'r') as file:
+                    self.data = json.load(file)
+            except FileNotFoundError:
+                self.data = {}
+                self.save_data()
+        else:
             self.data = {}
-            self.save_data()  # Crée un nouveau fichier si inexistant
+
+    def save_data(self):
+        if self.file_path:
+            with open(self.file_path, 'w') as file:
+                json.dump(self.data, file, indent=4)
+
+    def load_cities_data(self):
+        if self.city_file_path:
+            try:
+                with open(self.city_file_path, 'r') as file:
+                    self.cities = json.load(file)
+            except FileNotFoundError:
+                self.cities = {}
+                self.save_cities_data()
+        else:
+            self.cities = {}
+
+    def save_cities_data(self):
+        if self.city_file_path:
+            with open(self.city_file_path, 'w') as file:
+                json.dump(self.cities, file, indent=4)
 
     def load_countries(self):
         if self.countries_file_path:
@@ -29,12 +52,15 @@ class DataManager:
                 with open(self.countries_file_path, 'r') as file:
                     self.countries = json.load(file)
             except FileNotFoundError:
-                raise FileNotFoundError(f"Countries file '{self.countries_file_path}' not found.")
+                self.countries = []
+                self.save_countries_data()
+        else:
+            self.countries = []
 
-    def save_data(self):
-        with open(self.file_path, 'w') as file:
-            serialized_data = {str(key): value for key, value in self.data.items()}
-            json.dump(serialized_data, file, indent=4)
+    def save_countries_data(self):
+        if self.countries_file_path:
+            with open(self.countries_file_path, 'w') as file:
+                json.dump(self.countries, file, indent=4)
 
     def create(self, entity):
         if not hasattr(entity, 'id'):
@@ -77,18 +103,14 @@ class DataManager:
         if not isinstance(city, City):
             raise TypeError("Expected City instance")
         
-        # Validate country_code against preloaded countries
-        if not self.is_valid_country_code(city.country_code):
-            raise ValueError(f"Invalid country_code '{city.country_code}'")
-
         key = f"{city.id}_City"
-        self.data[key] = city.to_dict()
-        self.save_data()
+        self.cities[key] = city.to_dict()
+        self.save_cities_data()
         print(f"City with ID {city.id} created.")
 
     def read_city(self, city_id):
         key = f"{city_id}_City"
-        data = self.data.get(key)
+        data = self.cities.get(key)
         if data:
             print(f"City with ID {city_id} retrieved.")
             return City.from_dict(data)
@@ -98,22 +120,18 @@ class DataManager:
 
     def update_city(self, city):
         key = f"{city.id}_City"
-        if key in self.data:
-            # Validate country_code against preloaded countries
-            if not self.is_valid_country_code(city.country_code):
-                raise ValueError(f"Invalid country_code '{city.country_code}'")
-            
-            self.data[key] = city.to_dict()
-            self.save_data()
+        if key in self.cities:
+            self.cities[key] = city.to_dict()
+            self.save_cities_data()
             print(f"City with ID {city.id} updated.")
         else:
             raise ValueError(f"City with ID '{city.id}' does not exist in the data store.")
 
     def delete_city(self, city_id):
         key = f"{city_id}_City"
-        if key in self.data:
-            del self.data[key]
-            self.save_data()
+        if key in self.cities:
+            del self.cities[key]
+            self.save_cities_data()
             print(f"City with ID {city_id} deleted.")
         else:
             print(f"City with ID {city_id} not found. Deletion failed.")
@@ -122,40 +140,45 @@ class DataManager:
         if not isinstance(country, Country):
             raise TypeError("Expected Country instance")
         
-        key = f"{country.code}_Country"
-        self.data[key] = country.to_dict()
-        self.save_data()
+        self.countries.append(country.to_dict())
+        self.save_countries_data()
         print(f"Country with code {country.code} created.")
 
     def read_country(self, country_code):
-        key = f"{country_code}_Country"
-        data = self.data.get(key)
-        if data:
-            print(f"Country with code {country_code} retrieved.")
-            return Country.from_dict(data)
-        else:
-            print(f"Country with code {country_code} not found.")
-            return None
+        for country_data in self.countries:
+            if country_data.get('code') == country_code:
+                print(f"Country with code {country_code} retrieved.")
+                return Country.from_dict(country_data)
+        print(f"Country with code {country_code} not found.")
+        return None
 
     def update_country(self, country):
-        key = f"{country.code}_Country"
-        if key in self.data:
-            self.data[key] = country.to_dict()
-            self.save_data()
+        updated = False
+        for idx, country_data in enumerate(self.countries):
+            if country_data.get('code') == country.code:
+                self.countries[idx] = country.to_dict()
+                updated = True
+                break
+        
+        if updated:
+            self.save_countries_data()
             print(f"Country with code {country.code} updated.")
         else:
             raise ValueError(f"Country with code '{country.code}' does not exist in the data store.")
 
     def delete_country(self, country_code):
-        key = f"{country_code}_Country"
-        if key in self.data:
-            del self.data[key]
-            self.save_data()
+        deleted = False
+        for idx, country_data in enumerate(self.countries):
+            if country_data.get('code') == country_code:
+                del self.countries[idx]
+                deleted = True
+                break
+        
+        if deleted:
+            self.save_countries_data()
             print(f"Country with code {country_code} deleted.")
         else:
             print(f"Country with code {country_code} not found. Deletion failed.")
 
     def is_valid_country_code(self, country_code):
-        # Implement your validation logic here
-        # For example, check if the country_code exists in your pre-loaded data
-        return country_code in [country['code'] for country in self.countries]
+        return any(country_data.get('code') == country_code for country_data in self.countries)

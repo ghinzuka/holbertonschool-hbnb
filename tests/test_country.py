@@ -9,20 +9,20 @@ from persistence.datamanager import DataManager
 class TestCountryCRUD(unittest.TestCase):
 
     def setUp(self):
-        # Create a temporary file to use as our database
-        self.db_fd, self.db_path = tempfile.mkstemp()
+        # Créer un fichier temporaire pour la base de données
+        self.db_fd, self.db_path = tempfile.mkstemp(suffix='.json')
         
-        # Copy the countries.json to a temporary location
-        self.countries_temp_path = tempfile.mkstemp()[1]
-        shutil.copy('persistence/countries.json', self.countries_temp_path)
+        # Chemin vers countries.json dans le dossier persistence/
+        countries_json_path = os.path.join(os.path.dirname(__file__), '..', 'persistence', 'countries.json')
         
-        self.data_manager = DataManager(self.db_path, self.countries_temp_path)
+        # Créer une instance de DataManager avec les chemins appropriés
+        self.data_manager = DataManager(file_path=self.db_path,
+                                        countries_file_path=countries_json_path)
         
     def tearDown(self):
-        # Close and remove the temporary database file
+        # Fermer et supprimer le fichier de base de données temporaire
         os.close(self.db_fd)
         os.remove(self.db_path)
-        os.remove(self.countries_temp_path)
 
     def test_create_country(self):
         country = Country(name="Germany", code="DE")
@@ -56,9 +56,3 @@ class TestCountryCRUD(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-    
-    
-    
-    
-    
-    

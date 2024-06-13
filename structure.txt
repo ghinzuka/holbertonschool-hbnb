@@ -2,13 +2,17 @@ project/
 │
 ├── Dockerfile
 ├── requirements.txt
+|---data.json
+|---city_data.json
+|---amenity_data.json
+|---structure.txt
 │
 ├── api/
 │   ├── __init__.py
 │   ├── app_user.py
 │   ├── app_amenity.py
-│   └── test_app_amenity.py
-│   └── test_app_user.py
+│   ├── app_city.py
+│   └── app_country.py
 │
 ├── models/
 │   ├── __init__.py
@@ -23,11 +27,11 @@ project/
 ├── persistence/
 │   ├── __init__.py
 │   ├── datamanager.py
+|   |--countries.json
 │   └── ipersistence.py
 │
 └── tests/
     ├── test_amenity.py
-    ├── test_base.py
     ├── test_city.py
     ├── test_country.py
     ├── test_place.py
