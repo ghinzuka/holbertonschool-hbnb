@@ -1,8 +1,8 @@
 {
-    "7ecb767c-5d28-437c-84a2-150a3f8c274f_User": {
-        "id": "7ecb767c-5d28-437c-84a2-150a3f8c274f",
-        "created_at": "2024-06-13T13:54:14.292813",
-        "updated_at": "2024-06-13T13:54:14.292819",
+    "179f7802-3ad6-443d-942a-d6d5173a9bc0_User": {
+        "id": "179f7802-3ad6-443d-942a-d6d5173a9bc0",
+        "created_at": "2024-06-13T14:04:03.966188",
+        "updated_at": "2024-06-13T14:04:03.966196",
         "email": "updateduser@example.com",
         "password": "newpassword123",
         "first_name": "Updated",

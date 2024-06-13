@@ -1,4 +1,9 @@
+import json
 from .base import BaseModel
+
+# Load countries data
+with open('persistence/countries.json', 'r') as file:
+    COUNTRIES = json.load(file)
 
 class City(BaseModel):
     def __init__(self, name: str, country_code: str):
@@ -22,8 +27,8 @@ class City(BaseModel):
 
     @country_code.setter
     def country_code(self, value: str):
-        if not isinstance(value, str) or len(value) != 2:
-            raise TypeError("Country code must be a 2-character string")
+        if not isinstance(value, str) or len(value) != 2 or value.upper() not in COUNTRIES:
+            raise TypeError("Country code must be a valid 2-character string from the countries list")
         self._country_code = value.upper()
 
     def to_dict(self):
