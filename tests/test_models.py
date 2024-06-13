@@ -11,7 +11,9 @@ from models.city import City
 from models.country import Country
 
 class TestModels(unittest.TestCase):
-
+    """
+	This class contains unit tests for the models in the application.
+	"""
     def test_user_creation(self):
         user = User('email@example.com', 'password', 'John', 'Doe')
         self.assertIsNotNone(user.id)
