@@ -1,0 +1,11 @@
+{
+    "24322e46-e135-4d80-a98c-2cd0b3150f7a_User": {
+        "id": "24322e46-e135-4d80-a98c-2cd0b3150f7a",
+        "created_at": "2024-06-13T10:04:42.934811",
+        "updated_at": "2024-06-13T10:04:42.934818",
+        "email": "updateduser@example.com",
+        "password": "newpassword123",
+        "first_name": "Updated",
+        "last_name": "User"
+    }
+}
