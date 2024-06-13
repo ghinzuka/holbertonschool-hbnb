@@ -27,6 +27,8 @@ project/
 ├── persistence/
 │   ├── __init__.py
 │   ├── datamanager.py
+|   |---country_manager.py
+|   |---City_manager.py
 |   |--countries.json
 │   └── ipersistence.py
 │
