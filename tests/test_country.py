@@ -1,9 +1,10 @@
 import unittest
-from models.country import Country
-from persistence.datamanager import DataManager
 import os
+import json
 import tempfile
 import shutil
+from models.country import Country
+from persistence.datamanager import DataManager
 
 class TestCountryCRUD(unittest.TestCase):
 
@@ -12,7 +13,7 @@ class TestCountryCRUD(unittest.TestCase):
         self.db_fd, self.db_path = tempfile.mkstemp()
         
         # Copy the countries.json to a temporary location
-        self.countries_temp_path = tempfile.mktemp()
+        self.countries_temp_path = tempfile.mkstemp()[1]
         shutil.copy('persistence/countries.json', self.countries_temp_path)
         
         self.data_manager = DataManager(self.db_path, self.countries_temp_path)
@@ -22,7 +23,7 @@ class TestCountryCRUD(unittest.TestCase):
         os.close(self.db_fd)
         os.remove(self.db_path)
         os.remove(self.countries_temp_path)
-    
+
     def test_create_country(self):
         country = Country(name="Germany", code="DE")
         self.data_manager.create_country(country)
@@ -55,3 +56,9 @@ class TestCountryCRUD(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+    
+    
+    
+    
+    
+    

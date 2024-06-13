@@ -3,7 +3,7 @@ from models.city import City
 from models.country import Country
 
 class DataManager:
-    def __init__(self, file_path, countries_file_path):
+    def __init__(self, file_path, countries_file_path=None):
         self.file_path = file_path
         self.countries_file_path = countries_file_path
         self.data = {}
@@ -14,16 +14,22 @@ class DataManager:
     def load_data(self):
         try:
             with open(self.file_path, 'r') as file:
-                self.data = json.load(file)
+                content = file.read().strip()
+                if content:
+                    self.data = json.loads(content)
+                else:
+                    self.data = {}
         except FileNotFoundError:
+            self.data = {}
             self.save_data()  # Crée un nouveau fichier si inexistant
 
     def load_countries(self):
-        try:
-            with open(self.countries_file_path, 'r') as file:
-                self.countries = json.load(file)
-        except FileNotFoundError:
-            raise FileNotFoundError(f"Countries file '{self.countries_file_path}' not found.")
+        if self.countries_file_path:
+            try:
+                with open(self.countries_file_path, 'r') as file:
+                    self.countries = json.load(file)
+            except FileNotFoundError:
+                raise FileNotFoundError(f"Countries file '{self.countries_file_path}' not found.")
 
     def save_data(self):
         with open(self.file_path, 'w') as file:
