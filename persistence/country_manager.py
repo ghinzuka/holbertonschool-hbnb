@@ -21,8 +21,8 @@ class CountryManager:
         if not isinstance(country, Country):
             raise TypeError("Expected Country instance")
         
-        if country.code not in self.available_countries:
-            raise ValueError(f"Invalid country code: {country.code}")
+        if country.code in self.available_countries:
+            raise ValueError(f"Country with code {country.code} already exists")
 
         self.available_countries[country.code] = country.name
         self.save_countries_data()
