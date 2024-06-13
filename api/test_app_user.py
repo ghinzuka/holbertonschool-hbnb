@@ -8,7 +8,6 @@ class TestUserAPI(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
         self.app.testing = True
-        # Clear data_manager data for a clean test environment
         data_manager.data = {}
         data_manager.save_data()
 
@@ -26,7 +25,6 @@ class TestUserAPI(unittest.TestCase):
         self.created_user_id = response.json['id']
 
     def test_get_user(self):
-        # Create a user to test
         user_data = {
             'email': 'fetchuser@example.com',
             'password': 'password123',
@@ -42,7 +40,6 @@ class TestUserAPI(unittest.TestCase):
         self.assertEqual(response.json['email'], user_data['email'])
 
     def test_update_user(self):
-        # Create a user to test
         user_data = {
             'email': 'updateuser@example.com',
             'password': 'password123',
@@ -64,7 +61,6 @@ class TestUserAPI(unittest.TestCase):
         self.assertEqual(response.json['email'], updated_user_data['email'])
 
     def test_delete_user(self):
-        # Create a user to test
         user_data = {
             'email': 'deleteuser@example.com',
             'password': 'password123',
@@ -78,7 +74,6 @@ class TestUserAPI(unittest.TestCase):
         print(f"Delete User Response Status Code: {response.status_code}")
         self.assertEqual(response.status_code, 204)
         
-        # Verify user is deleted
         response = self.app.get(f'/users/{user_id}')
         print(f"Get Deleted User Response: {response.json}")
         self.assertEqual(response.status_code, 404)
