@@ -1,5 +1,6 @@
 from .base import BaseModel
 
+
 class City(BaseModel):
     def __init__(self, name: str, country_code: str):
         super().__init__()
@@ -31,7 +32,7 @@ class City(BaseModel):
             "name": self.name,
             "country_code": self.country_code
         }
-        city_dict.update(super().to_dict())  # Add attributes from BaseModel
+        city_dict.update(super().to_dict())
         return city_dict
 
     @classmethod
