@@ -7,7 +7,7 @@ city_bp = Blueprint('city', __name__)
 api = Api(city_bp, version='1.0', title='City API', description='API for managing cities')
 
 # Initialize CityManager with the JSON file path
-city_manager = CityManager('cities.json')
+city_manager = CityManager('data/cities.json')
 
 # Define the City model for serialization and validation
 city_model = api.model('City', {
@@ -15,9 +15,14 @@ city_model = api.model('City', {
     'country_code': fields.String(required=True, description='The country code (ISO 3166-1 alpha-2)')
 })
 
-# Endpoint to create a new city
 @api.route('/cities')
 class CityList(Resource):
+    @api.doc('list_cities')
+    @api.marshal_list_with(city_model)
+    def get(self):
+        '''List all cities'''
+        return [city.to_dict() for city in city_manager.get_all_cities()]
+
     @api.doc('create_city')
     @api.expect(city_model)
     @api.response(201, 'City successfully created', model=city_model)
@@ -35,16 +40,6 @@ class CityList(Resource):
         except KeyError:
             abort(409, message=f"City name '{data['name']}' already exists in country '{data['country_code']}'")
 
-# Endpoint to retrieve all cities
-@api.route('/cities')
-class AllCities(Resource):
-    @api.doc('list_all_cities')
-    @api.marshal_list_with(city_model)
-    def get(self):
-        '''List all cities'''
-        return [city.to_dict() for city in city_manager.get_all_cities()]
-
-# Endpoint to retrieve details of a specific city by its ID
 @api.route('/cities/<string:city_id>')
 @api.response(404, 'City not found')
 class SingleCity(Resource):
@@ -58,13 +53,11 @@ class SingleCity(Resource):
         else:
             abort(404, message='City not found')
 
-# Endpoint to update an existing city's information
-@api.route('/cities/<string:city_id>')
-@api.response(404, 'City not found')
-class UpdateCity(Resource):
     @api.doc('update_city')
     @api.expect(city_model)
-    @api.marshal_with(city_model)
+    @api.response(200, 'City successfully updated', model=city_model)
+    @api.response(400, 'Invalid data')
+    @api.response(404, 'City not found')
     def put(self, city_id):
         '''Update a city given its ID'''
         data = request.json
@@ -76,18 +69,15 @@ class UpdateCity(Resource):
             city.name = data['name']
             city.country_code = data['country_code']
             city_manager.update_city(city)
-            return city.to_dict()
+            return city.to_dict(), 200
         except (TypeError, ValueError) as e:
             return {'message': str(e)}, 400
         except KeyError:
             abort(409, message=f"City name '{data['name']}' already exists in country '{data['country_code']}'")
 
-# Endpoint to delete a specific city by its ID
-@api.route('/cities/<string:city_id>')
-@api.response(404, 'City not found')
-class DeleteCity(Resource):
     @api.doc('delete_city')
     @api.response(204, 'City successfully deleted')
+    @api.response(404, 'City not found')
     def delete(self, city_id):
         '''Delete a city given its ID'''
         if city_manager.delete_city(city_id):
@@ -95,5 +85,5 @@ class DeleteCity(Resource):
         else:
             abort(404, message='City not found')
 
-# Ce fichier est un Blueprint indépendant. Nous n'exécutons pas l'application Flask ici.
-
+# Export the blueprint for use in app.py
+city_bp = city_bp
