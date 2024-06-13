@@ -30,7 +30,6 @@ class TestAmenities(unittest.TestCase):
 
         retrieved_amenities = self.datamanager.read(amenities.id, Amenities)
         self.assertEqual(retrieved_amenities.name, 'Swimming Pool')
-        # Check that the ID has been properly set
         self.assertIsNotNone(retrieved_amenities.id)
 
         amenities.name = 'Gym'
