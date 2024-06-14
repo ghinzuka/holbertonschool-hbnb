@@ -1,14 +1,14 @@
 from .base import BaseModel
 
 class Place(BaseModel):
-    def __init__(self, name: str, description: str, address: str, city_name: str,
+    def __init__(self, name: str, description: str, address: str, city_id: str,
                  latitude: float, longitude: float, n_room: int, n_bathroom: int,
-                 price_per_night: float, n_max_people: int, amenities: str, reviews: str):
+                 price_per_night: float, n_max_people: int, amenities: list, reviews: str):
         super().__init__()
         self.name = name
         self.description = description
         self.address = address
-        self.city_name = city_name
+        self.city_id = city_id
         self.latitude = latitude
         self.longitude = longitude
         self.n_room = n_room
@@ -53,14 +53,14 @@ class Place(BaseModel):
         self._address = value
 
     @property
-    def city_name(self):
-        return self._city_name
+    def city_id(self):
+        return self._city_id
 
-    @city_name.setter
-    def city_name(self, value):
+    @city_id.setter
+    def city_id(self, value):
         if not isinstance(value, str) or not value:
-            raise TypeError("city_name must be a non-empty string")
-        self._city_name = value
+            raise TypeError("city_id must be a non-empty string")
+        self._city_id = value
 
     @property
     def latitude(self):
@@ -135,6 +135,18 @@ class Place(BaseModel):
         self._n_max_people = value
 
     @property
+    def amenities(self):
+        return self._amenities
+
+    @amenities.setter
+    def amenities(self, value):
+        if not isinstance(value, list):
+            raise TypeError("amenities must be a list of strings")
+        if not all(isinstance(amenity, str) for amenity in value):
+            raise TypeError("all amenities must be strings")
+        self._amenities = value
+
+    @property
     def reviews(self):
         return self._reviews
 
@@ -143,16 +155,6 @@ class Place(BaseModel):
         if not isinstance(value, str) or not value:
             raise TypeError("reviews must be a non-empty string")
         self._reviews = value
-    
-    @property
-    def amenities(self):
-        return self._amenities
-
-    @amenities.setter
-    def amenities(self, value):
-        if not isinstance(value, str) or not value:
-            raise TypeError("amenities must be a non-empty string")
-        self._amenities = value
 
     def to_dict(self):
         place_dict = super().to_dict()  # Inclure les champs de BaseModel
@@ -160,7 +162,7 @@ class Place(BaseModel):
             "name": self.name,
             "description": self.description,
             "address": self.address,
-            "city_name": self.city_name,
+            "city_id": self.city_id,
             "latitude": self.latitude,
             "longitude": self.longitude,
             "n_room": self.n_room,
@@ -178,7 +180,7 @@ class Place(BaseModel):
             name=data["name"],
             description=data["description"],
             address=data["address"],
-            city_name=data["city_name"],
+            city_id=data["city_id"],
             latitude=data["latitude"],
             longitude=data["longitude"],
             n_room=data["n_room"],
