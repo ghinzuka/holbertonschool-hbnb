@@ -3,8 +3,8 @@
 Welcome to the HBnB Evolution: Part 1 (Model + API), a RESTful API for managing cities, countries, users, and amenities using Flask and Flask-Restx.
 
 Here is the UML for the models
+![HBNB-Pouquerou-Grauleau (1)](https://github.com/ghinzuka/holbertonschool-hbnb/assets/102736316/216fbb01-a86b-4c36-8864-90bc50ea5302)
 
-[HBNB-Pouquerou-Grauleau (2).pdf](https://github.com/user-attachments/files/15900954/HBNB-Pouquerou-Grauleau.2.pdf)
 
 ## Features
 
