@@ -2,6 +2,10 @@
 
 Welcome to the HBnB Evolution: Part 1 (Model + API), a RESTful API for managing cities, countries, users, and amenities using Flask and Flask-Restx.
 
+Here is the UML for the models
+
+[HBNB-Pouquerou-Grauleau (2).pdf](https://github.com/user-attachments/files/15900954/HBNB-Pouquerou-Grauleau.2.pdf)
+
 ## Features
 
 **Users**: Create, read, update, delete users.
@@ -101,7 +105,7 @@ Unit tests for each endpoint can be found in the `tests/` directory. Run tests u
 
 ## Authors
 This project was made by :
-* <[[@ghinzuka](https://github.com/ghinzuka)]>
+* <[[@ghinzuka](https://github.com/ghinzuka)]> POUQUEROU BAPTISTE
 * <[Matthieu Grauleau](https://github.com/MatthieuGrauleau)>
 
 ## License
